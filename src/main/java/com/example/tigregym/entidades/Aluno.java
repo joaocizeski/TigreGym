@@ -1,5 +1,6 @@
 package com.example.tigregym.entidades;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,11 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Usuario {
+public class Aluno {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
@@ -21,8 +25,10 @@ public class Usuario {
 
     public String cpf;
 
-    public String email;
+    public LocalDate dataNascimento;
 
-    public String senha;
+    public String telefone;
+
+    public String email;
 
 }

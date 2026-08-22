@@ -1,6 +1,6 @@
 package com.example.tigregym.controllers;
 
-import com.example.tigregym.entidades.Aluno;
+import com.example.tigregym.entities.Aluno;
 import com.example.tigregym.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

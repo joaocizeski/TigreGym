@@ -1,6 +1,6 @@
 package com.example.tigregym.controllers;
 
-import com.example.tigregym.entidades.Plano;
+import com.example.tigregym.entities.Plano;
 import com.example.tigregym.repository.PlanoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

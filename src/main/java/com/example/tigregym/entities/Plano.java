@@ -1,4 +1,4 @@
-package com.example.tigregym.entidades;
+package com.example.tigregym.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,20 +14,17 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Matricula {
+public class Plano {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
 
-    public String aluno;
+    public String nome;
 
-    public String plano;
+    public String descricao;
 
-    public LocalDateTime dataInicio;
+    public String valor;
 
-    public LocalDateTime dataVencimento;
-
-    public String status;
-
+    public LocalDateTime duracaoEmMeses;
 }

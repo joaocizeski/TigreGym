@@ -1,6 +1,6 @@
 package com.example.tigregym.controllers;
 
-import com.example.tigregym.entidades.Matricula;
+import com.example.tigregym.entities.Matricula;
 import com.example.tigregym.repository.MatriculaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

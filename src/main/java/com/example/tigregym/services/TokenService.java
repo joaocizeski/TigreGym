@@ -51,7 +51,7 @@ public class TokenService {
         var dataFutura = dataAtual.plusMinutes(expiracao);
 
         //Converter em instant
-        return dataFutura.toInstant(ZoneOffset.of("03:00"));
+        return dataFutura.toInstant(ZoneOffset.of("-03:00"));
     }
 
 }

@@ -1,5 +1,5 @@
 package com.example.tigregym.DTOs;
 
-public record LoginRequest(String email, String senha) {
+public record LoginRequest(String token) {
 
 }

@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -15,14 +17,22 @@ import lombok.NoArgsConstructor;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
+    private long id;
 
-    public String nome;
+    private String nome;
 
-    public String cpf;
+    private String cpf;
 
-    public String email;
+    private String email;
 
-    public String senha;
+    private String senha;
+
+    private EnumStatusUsuario status;
+
+    // Token temporário usado para permitir a troca de senha
+    public String resetToken;
+
+    // Data e hora em que o token de recuperação deixa de ser válido
+    public LocalDateTime resetTokenExpiracao;
 
 }

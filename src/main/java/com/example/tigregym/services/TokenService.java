@@ -60,10 +60,10 @@ public class TokenService {
         //pegar data atual
         var dataAtual = LocalDateTime.now();
         //Adicionar ou diminuir tempo da data atual
-        var dataFutura = dataAtual.plusMinutes(expiracao);
+        dataAtual = dataAtual.plusMinutes(expiracao);
 
         //Converter em instant
-        return dataFutura.toInstant(ZoneOffset.of("-03:00"));
+        return dataAtual.toInstant(ZoneOffset.of("-03:00"));
     }
 
 }

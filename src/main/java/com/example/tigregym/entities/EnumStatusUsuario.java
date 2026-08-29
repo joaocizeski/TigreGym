@@ -4,6 +4,6 @@ public enum EnumStatusUsuario {
 
     ATIVO,
     BLOQUEADO,
-    EXCLUIDO, ESCLUIDO
+    EXCLUIDO,
 
 }

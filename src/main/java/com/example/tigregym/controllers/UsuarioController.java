@@ -29,7 +29,7 @@ public class UsuarioController {
 
     }
 
-    @PatchMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Usuario> listarPorId(@PathVariable Long id) {
 
         Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
@@ -51,14 +51,16 @@ public class UsuarioController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusRequest statusRequest) {
+    public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusRequest statusRequest){
+
         Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
-        if (usuarioBanco != null) {
+        if(usuarioBanco!= null ){
             usuarioBanco.setStatus(statusRequest.status());
             usuarioRepository.save(usuarioBanco);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.notFound().build();
+
+        return  ResponseEntity.notFound().build();
     }
 
     @PatchMapping("/{id}")

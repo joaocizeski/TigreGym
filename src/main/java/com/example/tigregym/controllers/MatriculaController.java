@@ -2,6 +2,7 @@ package com.example.tigregym.controllers;
 
 import com.example.tigregym.DTOs.AtualizarStatusMatriculaRequest;
 import com.example.tigregym.entities.EnumStatusMatricula;
+import com.example.tigregym.entities.EnumStatusPlano;
 import com.example.tigregym.entities.Matricula;
 import com.example.tigregym.repository.MatriculaRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +26,7 @@ public class MatriculaController {
             description = "Método responsável por efetuar a consulta de todas as matrículas sem filtro")
     public ResponseEntity<?> listarTodos(){
 
-        return ResponseEntity.ok(matriculaRepository.findAll());
+        return ResponseEntity.ok(matriculaRepository.findByStatusNot(EnumStatusMatricula.EXCLUIDO));
 
     }
 

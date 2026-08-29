@@ -28,6 +28,6 @@ public class Matricula {
 
     public LocalDateTime dataVencimento;
 
-    public String status;
+    public EnumStatusMatricula status = EnumStatusMatricula.ATIVO;
 
 }

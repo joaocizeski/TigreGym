@@ -1,5 +1,7 @@
 package com.example.tigregym.controllers;
 
+import com.example.tigregym.DTOs.AtualizarStatusPlanoRequest;
+import com.example.tigregym.entities.EnumStatusPlano;
 import com.example.tigregym.entities.Plano;
 import com.example.tigregym.repository.PlanoRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +25,7 @@ public class PlanoController {
             description = "Método responsável por efetuar a consulta de todos os planos sem filtro")
     public ResponseEntity<?> listarTodos(){
 
-        return ResponseEntity.ok(planoRepository.findAll());
+        return ResponseEntity.ok(planoRepository.findByStatusNot(EnumStatusPlano.EXCLUIDO));
 
     }
 
@@ -36,6 +38,80 @@ public class PlanoController {
         var planoBanco = planoRepository.save(plano);
         return ResponseEntity.ok(planoBanco);
 
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Plano> listarPorId(@PathVariable Long id) {
+
+        Plano planoBanco = planoRepository.findById(id).orElse(null);
+
+        if (planoBanco != null) {
+            return ResponseEntity.ok(planoBanco);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Void> atualizarStatus(
+            @PathVariable Long id,
+            @RequestBody AtualizarStatusPlanoRequest statusRequest) {
+
+        Plano planoBanco = planoRepository.findById(id).orElse(null);
+
+        if (planoBanco != null) {
+
+            // Altera o status do plano
+            planoBanco.setStatus(statusRequest.status());
+
+            planoRepository.save(planoBanco);
+
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Plano> atualizar(
+            @PathVariable Long id,
+            @RequestBody Plano plano) {
+
+        Plano planoBanco = planoRepository.findById(id).orElse(null);
+
+        if (planoBanco != null) {
+
+            // Atualiza os dados do plano
+            planoBanco.setNome(plano.getNome());
+            planoBanco.setDescricao(plano.getDescricao());
+            planoBanco.setValor(plano.getValor());
+            planoBanco.setDuracaoEmMeses(plano.getDuracaoEmMeses());
+            planoBanco.setStatus(plano.getStatus());
+
+            planoRepository.save(planoBanco);
+
+            return ResponseEntity.ok(planoBanco);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}/excluir")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+
+        Plano planoBanco = planoRepository.findById(id).orElse(null);
+
+        if (planoBanco != null) {
+
+            // Faz a exclusão lógica do plano
+            planoBanco.setStatus(EnumStatusPlano.EXCLUIDO);
+
+            planoRepository.save(planoBanco);
+
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
 }

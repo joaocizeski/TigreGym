@@ -1,6 +1,8 @@
 package com.example.tigregym.controllers;
 
+import com.example.tigregym.DTOs.CadastroRequest;
 import com.example.tigregym.DTOs.LoginRequest;
+import com.example.tigregym.entities.Usuario;
 import com.example.tigregym.repository.UsuarioRepository;
 import com.example.tigregym.services.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +37,32 @@ public class AuthController {
             return ResponseEntity.ok(new LoginResponse(token));
         }
         return ResponseEntity.badRequest().body("Usuário ou senha Invalido!");
+    }
+
+    @PostMapping("/cadastro")
+    @Operation(
+            summary = "Método de cadastro de usuário!",
+            description = "Método responsável por efetuar o cadastro de um novo usuário no sistema"
+    )
+    public ResponseEntity<?> cadastro(@RequestBody CadastroRequest request) {
+
+        // Verifica se o email já está cadastrado
+        if (usuarioRepository.existsUsuarioByEmail(request.email())) {
+            return ResponseEntity.badRequest().body("E-mail já cadastrado!");
+        }
+
+        // Cria um novo usuário
+        Usuario usuario = new Usuario();
+
+        usuario.setNome(request.nome());
+        usuario.setCpf(request.cpf());
+        usuario.setEmail(request.email());
+        usuario.setSenha(request.senha());
+
+        // Salva o usuário no banco de dados
+        usuarioRepository.save(usuario);
+
+        return ResponseEntity.ok("Usuário cadastrado com sucesso!");
     }
 
 }

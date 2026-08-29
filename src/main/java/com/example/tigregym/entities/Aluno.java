@@ -31,4 +31,6 @@ public class Aluno {
 
     public String email;
 
+    public EnumStatusAluno status = EnumStatusAluno.ATIVO;
+
 }

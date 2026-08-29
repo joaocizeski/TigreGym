@@ -15,4 +15,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<List<Usuario>> findByStatusNot(EnumStatusUsuario status);
 
+    // Verifica se já existe um usuário com o email informado
+    boolean existsUsuarioByEmail(String email);
+
 }

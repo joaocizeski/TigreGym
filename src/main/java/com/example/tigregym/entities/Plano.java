@@ -27,4 +27,6 @@ public class Plano {
     public String valor;
 
     public LocalDateTime duracaoEmMeses;
+
+    public EnumStatusPlano status = EnumStatusPlano.ATIVO;
 }

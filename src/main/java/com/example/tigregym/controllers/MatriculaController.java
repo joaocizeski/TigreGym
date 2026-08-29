@@ -42,6 +42,10 @@ public class MatriculaController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            summary = "Método de consulta de matrícula por ID!",
+            description = "Método responsável por efetuar a consulta de uma matrícula através do ID"
+    )
     public ResponseEntity<Matricula> listarPorId(@PathVariable Long id) {
 
         Matricula matriculaBanco =
@@ -55,6 +59,10 @@ public class MatriculaController {
     }
 
     @PatchMapping("/{id}/status")
+    @Operation(
+            summary = "Método de atualização do status da matrícula!",
+            description = "Método responsável por alterar o status de uma matrícula através do ID"
+    )
     public ResponseEntity<Void> atualizarStatus(
             @PathVariable Long id,
             @RequestBody AtualizarStatusMatriculaRequest statusRequest) {
@@ -76,6 +84,10 @@ public class MatriculaController {
     }
 
     @PatchMapping("/{id}")
+    @Operation(
+            summary = "Método de atualização de matrícula!",
+            description = "Método responsável por atualizar os dados de uma matrícula através do ID"
+    )
     public ResponseEntity<Matricula> atualizar(
             @PathVariable Long id,
             @RequestBody Matricula matricula) {
@@ -101,6 +113,10 @@ public class MatriculaController {
     }
 
     @DeleteMapping("/{id}/excluir")
+    @Operation(
+            summary = "Método de exclusão de matrícula!",
+            description = "Método responsável por alterar o status da matrícula para EXCLUIDO"
+    )
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
 
         Matricula matriculaBanco =

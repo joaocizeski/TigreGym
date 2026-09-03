@@ -1,6 +1,6 @@
 package com.example.tigregym.DTOs;
 
-public record RedefinirSenhaRequest(
+public record RecuperarSenhaRequest(
         String email,
         String cpf,
         String novaSenha

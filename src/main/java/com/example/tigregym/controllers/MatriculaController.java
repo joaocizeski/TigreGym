@@ -83,7 +83,7 @@ public class MatriculaController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @Operation(
             summary = "Método de atualização de matrícula!",
             description = "Método responsável por atualizar os dados de uma matrícula através do ID"

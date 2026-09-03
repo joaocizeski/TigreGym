@@ -78,7 +78,7 @@ public class PlanoController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @Operation(
             summary = "Método de atualização de plano!",
             description = "Método responsável por atualizar os dados de um plano através do ID"

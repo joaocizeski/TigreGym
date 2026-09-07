@@ -71,7 +71,7 @@ public class UsuarioController {
         return  ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @Operation(
             summary = "Método de atualização de usuário!",
             description = "Método responsável por atualizar os dados de um usuário através do ID"

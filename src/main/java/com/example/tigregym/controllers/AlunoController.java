@@ -81,7 +81,7 @@ public class AlunoController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @Operation(
             summary = "Método de atualização de aluno!",
             description = "Método responsável por atualizar os dados de um aluno através do ID"

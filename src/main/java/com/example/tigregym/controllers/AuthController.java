@@ -2,6 +2,7 @@ package com.example.tigregym.controllers;
 
 import com.example.tigregym.DTOs.CadastroRequest;
 import com.example.tigregym.DTOs.LoginRequest;
+import com.example.tigregym.DTOs.RecuperarSenhaRequest;
 import com.example.tigregym.entities.Usuario;
 import com.example.tigregym.repository.UsuarioRepository;
 import com.example.tigregym.services.TokenService;
@@ -65,4 +66,33 @@ public class AuthController {
         return ResponseEntity.ok("Usuário cadastrado com sucesso!");
     }
 
+    @PostMapping("/recuperar-senha")
+    @Operation(
+            summary = "Método de recuperação de senha!",
+            description = "Método responsável por recuperar a senha de um usuário"
+    )
+    public ResponseEntity<?> recuperarSenha(@RequestBody RecuperarSenhaRequest request) {
+
+        Usuario usuarioBanco = usuarioRepository
+                .findByEmailAndCpf(request.email(), request.cpf())
+                .orElse(null);
+
+        if (usuarioBanco != null) {
+
+            // Verifica se a nova senha é diferente da senha atual
+            if (usuarioBanco.getSenha().equals(request.novaSenha())) {
+                return ResponseEntity.badRequest()
+                        .body("A nova senha não pode ser igual à senha atual!");
+            }
+
+            // Altera a senha do usuário
+            usuarioBanco.setSenha(request.novaSenha());
+
+            usuarioRepository.save(usuarioBanco);
+
+            return ResponseEntity.ok("Senha alterada com sucesso!");
+        }
+
+        return ResponseEntity.badRequest().body("E-mail ou CPF inválido!");
+    }
 }

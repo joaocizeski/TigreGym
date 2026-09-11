@@ -1,14 +1,34 @@
 'use client'
-import { handler } from "next/dist/build/templates/app-route";
+
+import axios from "axios";
 import { useRouter } from "next/navigation";
+import { LoginResponse } from "../types/auth";
 
 export default function Login(){
     const router = useRouter();
 
     const handleLogin = async(formData:FormData)=>{
-        router.push("/home")
+
+        const emailTela = formData.get("email")?.toString() ?? ""
+        const senhaTela = formData.get("senha")?.toString() ?? ""
+
+    try {
+
+        var loginResposta = await axios.post<LoginResponse>(
+            "http://localhost:8080/auth/login",
+            {email:emailTela, senha:senhaTela}
+        )
+
+        if(loginResposta.status==200){
+            router.push("/home")
+        }
+
+    } catch (error) {
+        alert("Login ou senha Invalido!")
     }
-    
+        
+    }
+
     return(
 
         <div className="min-h-screen bg-black flex items-center justify-center px-4">
@@ -43,6 +63,7 @@ export default function Login(){
 
                         <input
                             name="senha"
+                            type="password"
                             placeholder="Digite sua senha"
                             className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white placeholder:text-zinc-500 outline-none transition focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20"
                         />

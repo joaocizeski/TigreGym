@@ -1,9 +1,11 @@
-export class Usuario {
+export class Aluno {
   constructor(
     public id: number | null,
     public nome: string,
+    public cpf: string,
+    public dataNascimento: string,
+    public telefone: string,
     public email: string,
     public status: string,
-    public cpf: string,
   ) {}
 }

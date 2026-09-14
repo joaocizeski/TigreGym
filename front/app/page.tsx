@@ -8,7 +8,6 @@ export default function Home() {
     <>
       <header className="header">
         <div className="container navbar">
-
           <a href="#inicio" className="marca">
             <Image
               src="/logo-tigregym-v2.png"
@@ -24,23 +23,20 @@ export default function Home() {
             <a href="#inicio">Início</a>
             <a href="#beneficios">Benefícios</a>
             <a href="#historia">Nossa história</a>
-            <Link href="/login" className="login">Login</Link> 
+            <Link href="/login" className="login">
+              Login
+            </Link>
           </nav>
-
         </div>
       </header>
 
       <main>
-
         {/* HERO */}
         <section className="hero" id="inicio">
-
           <div className="hero-overlay" />
 
           <div className="container hero-conteudo">
-
             <div className="hero-texto">
-
               <h1>
                 SUA ACADEMIA.
                 <br />
@@ -48,12 +44,11 @@ export default function Home() {
               </h1>
 
               <p>
-                O TigreGym é uma plataforma moderna e acessível para facilitar
-                a gestão da academia e melhorar a experiência dos alunos.
+                O TigreGym é uma plataforma moderna e acessível para facilitar a
+                gestão da academia e melhorar a experiência dos alunos.
               </p>
 
               <div className="hero-botoes">
-
                 <a href="/login" className="botao-principal">
                   Acessar TigreGym
                   <span>→</span>
@@ -62,11 +57,9 @@ export default function Home() {
                 <a href="#historia" className="botao-secundario">
                   Conheça nossa história
                 </a>
-
               </div>
 
               <div className="hero-detalhes">
-
                 <div>
                   <b>▥</b>
 
@@ -93,13 +86,10 @@ export default function Home() {
                     <small>para sua academia</small>
                   </span>
                 </div>
-
               </div>
-
             </div>
 
             <div className="hero-logo-area">
-
               <div className="brilho-logo" />
 
               <Image
@@ -110,23 +100,15 @@ export default function Home() {
                 className="logo-grande"
                 priority
               />
-
             </div>
-
           </div>
-
         </section>
 
         {/* BENEFÍCIOS */}
         <section className="beneficios" id="beneficios">
-
           <div className="container">
-
             <div className="titulo-section">
-
-              <div className="mini-titulo">
-                POR QUE TIGREGYM?
-              </div>
+              <div className="mini-titulo">POR QUE TIGREGYM?</div>
 
               <h2>
                 Academia sem
@@ -134,19 +116,14 @@ export default function Home() {
               </h2>
 
               <p>
-                Tudo o que a academia precisa de forma simples, organizada
-                e fácil de utilizar.
+                Tudo o que a academia precisa de forma simples, organizada e
+                fácil de utilizar.
               </p>
-
             </div>
 
             <div className="cards">
-
               <article className="card">
-
-                <div className="icone-card">
-                  01
-                </div>
+                <div className="icone-card">01</div>
 
                 <h3>Gestão completa</h3>
 
@@ -154,14 +131,10 @@ export default function Home() {
                   Organize alunos, planos e matrículas em um único sistema,
                   mantendo as informações importantes sempre acessíveis.
                 </p>
-
               </article>
 
               <article className="card">
-
-                <div className="icone-card">
-                  02
-                </div>
+                <div className="icone-card">02</div>
 
                 <h3>Experiência do aluno</h3>
 
@@ -169,37 +142,26 @@ export default function Home() {
                   Uma plataforma moderna e intuitiva, desenvolvida para ser
                   utilizada com facilidade por pessoas de diferentes idades.
                 </p>
-
               </article>
 
               <article className="card">
-
-                <div className="icone-card">
-                  03
-                </div>
+                <div className="icone-card">03</div>
 
                 <h3>Mais organização</h3>
 
                 <p>
-                  Uma rotina mais simples e eficiente para a academia,
-                  reduzindo complicações no dia a dia.
+                  Uma rotina mais simples e eficiente para a academia, reduzindo
+                  complicações no dia a dia.
                 </p>
-
               </article>
-
             </div>
-
           </div>
-
         </section>
 
         {/* HISTÓRIA */}
         <section className="historia" id="historia">
-
           <div className="container historia-grid">
-
             <div className="historia-visual">
-
               <div className="historia-linha" />
 
               <Image
@@ -209,14 +171,10 @@ export default function Home() {
                 height={290}
                 className="historia-logo"
               />
-
             </div>
 
             <div className="historia-texto">
-
-              <div className="mini-titulo">
-                NOSSA HISTÓRIA
-              </div>
+              <div className="mini-titulo">NOSSA HISTÓRIA</div>
 
               <h2>
                 FEITO EM CRICIÚMA
@@ -226,8 +184,8 @@ export default function Home() {
 
               <p>
                 O TigreGym nasceu da ideia de um torcedor do Criciúma que
-                percebeu uma oportunidade de melhorar a experiência das
-                pessoas com aplicativos de academia.
+                percebeu uma oportunidade de melhorar a experiência das pessoas
+                com aplicativos de academia.
               </p>
 
               <p>
@@ -247,23 +205,15 @@ export default function Home() {
                 região e faz referência ao Criciúma Esporte Clube, conhecido
                 como Tigre.
               </p>
-
             </div>
-
           </div>
-
         </section>
 
         {/* IDENTIDADE */}
         <section className="identidade">
-
           <div className="container identidade-grid">
-
             <div className="identidade-texto">
-
-              <div className="mini-titulo">
-                NOSSA IDENTIDADE
-              </div>
+              <div className="mini-titulo">NOSSA IDENTIDADE</div>
 
               <h2>
                 CRICIÚMA
@@ -273,12 +223,11 @@ export default function Home() {
 
               <p>
                 O preto e o branco predominam na identidade do TigreGym,
-                enquanto o amarelo aparece nos elementos de destaque,
-                trazendo uma ligação visual com o Criciúma e com a região.
+                enquanto o amarelo aparece nos elementos de destaque, trazendo
+                uma ligação visual com o Criciúma e com a região.
               </p>
 
               <div className="cores">
-
                 <div className="cor cor-preta">
                   <span>PRETO</span>
                 </div>
@@ -290,36 +239,25 @@ export default function Home() {
                 <div className="cor cor-amarela">
                   <span>AMARELO</span>
                 </div>
-
               </div>
-
             </div>
 
             <div className="identidade-logo">
-
               <Image
                 src="/logo-tigregym-v2.png"
                 alt="Identidade TigreGym"
                 width={550}
                 height={290}
               />
-
             </div>
-
           </div>
-
         </section>
 
         {/* CTA */}
         <section className="cta">
-
           <div className="container cta-box">
-
             <div>
-
-              <div className="mini-titulo">
-                TIGREGYM
-              </div>
+              <div className="mini-titulo">TIGREGYM</div>
 
               <h2>
                 SIMPLES PARA A ACADEMIA.
@@ -328,28 +266,22 @@ export default function Home() {
               </h2>
 
               <p>
-                Tecnologia, organização e uma experiência moderna em um
-                sistema pensado para ser simples.
+                Tecnologia, organização e uma experiência moderna em um sistema
+                pensado para ser simples.
               </p>
-
             </div>
 
             <a href="/login" className="botao-principal">
               Acessar agora
               <span>→</span>
             </a>
-
           </div>
-
         </section>
-
       </main>
 
       {/* FOOTER */}
       <footer className="footer">
-
         <div className="container footer-conteudo">
-
           <Image
             src="/logo-tigregym-v2.png"
             alt="TigreGym"
@@ -359,39 +291,22 @@ export default function Home() {
           />
 
           <div className="footer-links">
+            <a href="#inicio">Início</a>
 
-            <a href="#inicio">
-              Início
-            </a>
+            <a href="#beneficios">Benefícios</a>
 
-            <a href="#beneficios">
-              Benefícios
-            </a>
-
-            <a href="#historia">
-              Nossa história
-            </a>
-
+            <a href="#historia">Nossa história</a>
           </div>
 
           <div className="footer-final">
+            <span>Criciúma - Santa Catarina</span>
 
-            <span>
-              Criciúma - Santa Catarina
-            </span>
-
-            <small>
-              © 2026 TigreGym. Todos os direitos reservados.
-            </small>
-
+            <small>© 2026 TigreGym. Todos os direitos reservados.</small>
           </div>
-
         </div>
-
       </footer>
 
       <style jsx>{`
-
         :global(*) {
           margin: 0;
           padding: 0;
@@ -504,24 +419,18 @@ export default function Home() {
               rgba(245, 197, 24, 0.13),
               transparent 27%
             ),
-            linear-gradient(
-              115deg,
-              #070707 0%,
-              #0a0a0a 65%,
-              #11100b 100%
-            );
+            linear-gradient(115deg, #070707 0%, #0a0a0a 65%, #11100b 100%);
         }
 
         .hero-overlay {
           position: absolute;
           inset: 0;
 
-          background:
-            linear-gradient(
-              90deg,
-              rgba(0, 0, 0, 0.25),
-              transparent 55%
-            );
+          background: linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.25),
+            transparent 55%
+          );
 
           pointer-events: none;
         }
@@ -620,8 +529,7 @@ export default function Home() {
           font-size: 0.91rem;
           font-weight: 850;
 
-          box-shadow:
-            0 10px 40px rgba(245, 197, 24, 0.14);
+          box-shadow: 0 10px 40px rgba(245, 197, 24, 0.14);
 
           transition: 0.25s;
         }
@@ -729,8 +637,7 @@ export default function Home() {
 
           object-fit: contain;
 
-          filter:
-            drop-shadow(0 30px 50px rgba(0, 0, 0, 0.5));
+          filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.5));
         }
 
         /* BENEFÍCIOS */
@@ -808,15 +715,9 @@ export default function Home() {
 
           border-radius: 13px;
 
-          background:
-            linear-gradient(
-              145deg,
-              #111111,
-              #0d0d0d
-            );
+          background: linear-gradient(145deg, #111111, #0d0d0d);
 
-          border:
-            1px solid rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.08);
 
           transition: 0.25s;
         }
@@ -824,8 +725,7 @@ export default function Home() {
         .card:hover {
           transform: translateY(-5px);
 
-          border-color:
-            rgba(245, 197, 24, 0.3);
+          border-color: rgba(245, 197, 24, 0.3);
         }
 
         .icone-card {
@@ -903,8 +803,7 @@ export default function Home() {
 
           border-radius: 50%;
 
-          border:
-            1px solid rgba(245, 197, 24, 0.12);
+          border: 1px solid rgba(245, 197, 24, 0.12);
         }
 
         .historia-logo {
@@ -936,18 +835,11 @@ export default function Home() {
         .identidade {
           padding: 120px 0;
 
-          background:
-            linear-gradient(
-              120deg,
-              #101010,
-              #080808
-            );
+          background: linear-gradient(120deg, #101010, #080808);
 
-          border-top:
-            1px solid rgba(255, 255, 255, 0.05);
+          border-top: 1px solid rgba(255, 255, 255, 0.05);
 
-          border-bottom:
-            1px solid rgba(255, 255, 255, 0.05);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .identidade-grid {
@@ -989,8 +881,7 @@ export default function Home() {
 
           border-radius: 8px;
 
-          border:
-            1px solid rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .cor span {
@@ -1054,11 +945,9 @@ export default function Home() {
 
           border-radius: 18px;
 
-          border:
-            1px solid rgba(245, 197, 24, 0.18);
+          border: 1px solid rgba(245, 197, 24, 0.18);
 
-          background:
-            rgba(255, 255, 255, 0.025);
+          background: rgba(255, 255, 255, 0.025);
         }
 
         .cta p {
@@ -1078,8 +967,7 @@ export default function Home() {
 
           background: #050505;
 
-          border-top:
-            1px solid rgba(255, 255, 255, 0.07);
+          border-top: 1px solid rgba(255, 255, 255, 0.07);
         }
 
         .footer-conteudo {
@@ -1140,7 +1028,6 @@ export default function Home() {
         /* RESPONSIVO */
 
         @media (max-width: 900px) {
-
           .hero-conteudo,
           .historia-grid,
           .identidade-grid {
@@ -1179,11 +1066,9 @@ export default function Home() {
           .footer-final {
             align-items: flex-start;
           }
-
         }
 
         @media (max-width: 600px) {
-
           .navbar {
             height: 72px;
           }
@@ -1254,9 +1139,7 @@ export default function Home() {
           .footer-links {
             flex-wrap: wrap;
           }
-
         }
-
       `}</style>
     </>
   );

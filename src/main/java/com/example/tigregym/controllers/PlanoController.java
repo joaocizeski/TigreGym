@@ -41,6 +41,10 @@ public class PlanoController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            summary = "Método de consulta de plano por ID!",
+            description = "Método responsável por efetuar a consulta de um plano através do ID"
+    )
     public ResponseEntity<Plano> listarPorId(@PathVariable Long id) {
 
         Plano planoBanco = planoRepository.findById(id).orElse(null);
@@ -53,6 +57,10 @@ public class PlanoController {
     }
 
     @PatchMapping("/{id}/status")
+    @Operation(
+            summary = "Método de atualização do status do plano!",
+            description = "Método responsável por alterar o status de um plano através do ID"
+    )
     public ResponseEntity<Void> atualizarStatus(
             @PathVariable Long id,
             @RequestBody AtualizarStatusPlanoRequest statusRequest) {
@@ -73,6 +81,10 @@ public class PlanoController {
     }
 
     @PatchMapping("/{id}")
+    @Operation(
+            summary = "Método de atualização de plano!",
+            description = "Método responsável por atualizar os dados de um plano através do ID"
+    )
     public ResponseEntity<Plano> atualizar(
             @PathVariable Long id,
             @RequestBody Plano plano) {
@@ -97,6 +109,10 @@ public class PlanoController {
     }
 
     @DeleteMapping("/{id}/excluir")
+    @Operation(
+            summary = "Método de exclusão de plano!",
+            description = "Método responsável por alterar o status do plano para EXCLUIDO através do ID"
+    )
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
 
         Plano planoBanco = planoRepository.findById(id).orElse(null);

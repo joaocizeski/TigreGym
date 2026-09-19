@@ -15,7 +15,7 @@ export default function Usuarios() {
   const carregarDados = async () => {
     try {
       const dados = await axios.get<Usuario[]>(
-        "http://localhost:8080/usuarios",
+        "http://localhost:8080/usuarios"
       );
 
       setUsuarios(dados.data);
@@ -25,7 +25,7 @@ export default function Usuarios() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black px-6 py-8 md:px-10">
+    <div className="w-full bg-black px-6 py-8 md:px-10">
       <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <p className="text-yellow-400 text-sm font-bold tracking-[3px] mb-2">
@@ -40,7 +40,7 @@ export default function Usuarios() {
         </div>
 
         <Link
-          href="/usuarios/novo"
+          href="/usuario/novo"
           className="inline-flex items-center justify-center px-5 py-3 bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-sm rounded-lg transition-colors duration-150"
         >
           + Novo Usuário
@@ -72,6 +72,9 @@ export default function Usuarios() {
                   <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-wider">
                     Status
                   </th>
+                  <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                    Editar
+                  </th>
                 </tr>
               </thead>
 
@@ -101,6 +104,9 @@ export default function Usuarios() {
                       <span className="inline-flex px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs font-bold">
                         {usuario.status}
                       </span>
+                    </td>
+                    <td className="px-6 py-5 text-sm font-medium">
+                      <Link href={`/usuario/${usuario.id}/editar`}>Editar</Link>
                     </td>
                   </tr>
                 ))}

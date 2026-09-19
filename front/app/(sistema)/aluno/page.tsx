@@ -24,7 +24,7 @@ export default function Alunos() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#070707] text-white px-6 py-10 md:px-10">
+    <div className="w-full bg-[#070707] text-white px-6 py-10 md:px-10">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-10">
           <div>

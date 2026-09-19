@@ -18,7 +18,7 @@ export default function Login() {
       );
 
       if (loginResposta.status == 200) {
-        router.push("/usuarios");
+        router.push("/home");
       }
     } catch (error) {
       alert("Login ou senha Invalido!");

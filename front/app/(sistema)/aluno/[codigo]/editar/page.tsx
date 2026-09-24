@@ -1,7 +1,14 @@
-import Link from "next/link";
-import AlunoForm from "../components/AlunoForm";
+"use client";
 
-export default function CadastroAluno() {
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import AlunoForm from "../../components/AlunoForm";
+
+export default function EditarAluno() {
+  const parametro = useParams();
+
+  const codigo = Number(parametro.codigo);
+
   return (
     <div className="w-full bg-black px-6 py-10 md:px-10">
       <div className="max-w-4xl mx-auto">
@@ -25,11 +32,11 @@ export default function CadastroAluno() {
             </p>
 
             <h1 className="text-4xl md:text-5xl font-black text-white">
-              Novo Aluno
+              Editar Aluno {codigo}
             </h1>
 
             <p className="text-zinc-500 mt-3">
-              Preencha os dados para registrar um novo aluno.
+              Preencha os dados para editar o aluno.
             </p>
           </div>
 

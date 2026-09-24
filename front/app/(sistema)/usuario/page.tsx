@@ -73,7 +73,7 @@ export default function Usuarios() {
                     Status
                   </th>
                   <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-wider">
-                    Editar
+                    Ações
                   </th>
                 </tr>
               </thead>

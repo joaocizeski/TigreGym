@@ -25,6 +25,7 @@ public class UsuarioController {
             description = "Método responsável por efetuar a consulta de todos os usuários sem filtro")
     public ResponseEntity<?> listarTodos(){
 
+        // Busca os usuários que ainda não foram excluídos
         return ResponseEntity.ok(usuarioRepository.findByStatusNot(EnumStatusUsuario.EXCLUIDO));
 
     }
@@ -36,6 +37,7 @@ public class UsuarioController {
     )
     public ResponseEntity<Usuario> listarPorId(@PathVariable Long id) {
 
+        // Busca o usuário pelo código informado
         Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
         if (usuarioBanco != null) {
             return ResponseEntity.ok(usuarioBanco);
@@ -49,6 +51,7 @@ public class UsuarioController {
             description = "Método responsável por efetuar a criação de novos usuários!")
     public ResponseEntity<Usuario> criar(@RequestBody Usuario usuario){
 
+        // Salva o novo usuário no banco
         var usuarioBanco = usuarioRepository.save(usuario);
         return ResponseEntity.ok(usuarioBanco);
 
@@ -61,8 +64,10 @@ public class UsuarioController {
     )
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusUsuarioRequest statusRequest){
 
+        // Busca o usuário que terá o status alterado
         Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
         if(usuarioBanco!= null ){
+            // Coloca o novo status recebido do front
             usuarioBanco.setStatus(statusRequest.status());
             usuarioRepository.save(usuarioBanco);
             return ResponseEntity.ok().build();
@@ -79,8 +84,10 @@ public class UsuarioController {
     public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @RequestBody Usuario usuario){
 
         try {
+            // Busca o usuário antes de atualizar os dados
             Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
             if (usuarioBanco != null) {
+                // Atualiza os dados do usuário
                 usuarioBanco.setStatus(usuario.getStatus());
                 usuarioBanco.setNome(usuario.getNome());
                 usuarioBanco.setCpf(usuario.getCpf());
@@ -102,8 +109,10 @@ public class UsuarioController {
             description = "Método responsável por alterar o status do usuário para EXCLUIDO através do ID"
     )
     public ResponseEntity<Void> excluir(@PathVariable Long id){
+        // Busca o usuário que será marcado como excluído
         Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
         if (usuarioBanco != null) {
+            // Faz a exclusão lógica sem apagar o registro do banco
             usuarioBanco.setStatus(EnumStatusUsuario.EXCLUIDO);
             usuarioRepository.save(usuarioBanco);
             return ResponseEntity.ok().build();

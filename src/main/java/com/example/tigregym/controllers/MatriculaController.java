@@ -26,6 +26,7 @@ public class MatriculaController {
             description = "Método responsável por efetuar a consulta de todas as matrículas sem filtro")
     public ResponseEntity<?> listarTodos(){
 
+        // Busca as matrículas que ainda não foram excluídas
         return ResponseEntity.ok(matriculaRepository.findByStatusNot(EnumStatusMatricula.EXCLUIDO));
 
     }
@@ -36,6 +37,7 @@ public class MatriculaController {
             description = "Método responsável por efetuar a criação de novas matrículas!")
     public ResponseEntity<Matricula> criar(@RequestBody Matricula matricula){
 
+        // Salva a nova matrícula no banco
         var matriculaBanco = matriculaRepository.save(matricula);
         return ResponseEntity.ok(matriculaBanco);
 
@@ -48,6 +50,7 @@ public class MatriculaController {
     )
     public ResponseEntity<Matricula> listarPorId(@PathVariable Long id) {
 
+        // Busca a matrícula pelo código informado
         Matricula matriculaBanco =
                 matriculaRepository.findById(id).orElse(null);
 
@@ -67,6 +70,7 @@ public class MatriculaController {
             @PathVariable Long id,
             @RequestBody AtualizarStatusMatriculaRequest statusRequest) {
 
+        // Busca a matrícula que terá o status alterado
         Matricula matriculaBanco =
                 matriculaRepository.findById(id).orElse(null);
 
@@ -92,6 +96,7 @@ public class MatriculaController {
             @PathVariable Long id,
             @RequestBody Matricula matricula) {
 
+        // Busca a matrícula antes de atualizar os dados
         Matricula matriculaBanco =
                 matriculaRepository.findById(id).orElse(null);
 
@@ -119,6 +124,7 @@ public class MatriculaController {
     )
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
 
+        // Busca a matrícula que será marcada como excluída
         Matricula matriculaBanco =
                 matriculaRepository.findById(id).orElse(null);
 

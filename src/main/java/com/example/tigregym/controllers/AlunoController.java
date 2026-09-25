@@ -25,6 +25,7 @@ public class AlunoController {
             description = "Método responsável por efetuar a consulta de todos os alunos sem filtro")
     public ResponseEntity<?> listarTodos(){
 
+        // Busca os alunos que ainda não foram excluídos
         return ResponseEntity.ok(alunoRepository.findByStatusNot(EnumStatusAluno.EXCLUIDO));
 
     }
@@ -35,6 +36,7 @@ public class AlunoController {
             description = "Método responsável por efetuar a criação de novos alunos!")
     public ResponseEntity<Aluno> criar(@RequestBody Aluno aluno){
 
+        // Salva o novo aluno no banco
         var alunoBanco = alunoRepository.save(aluno);
 
         return ResponseEntity.ok(alunoBanco);
@@ -48,6 +50,7 @@ public class AlunoController {
     )
     public ResponseEntity<Aluno> listarPorId(@PathVariable Long id) {
 
+        // Busca o aluno pelo código informado
         Aluno alunoBanco = alunoRepository.findById(id).orElse(null);
 
         if (alunoBanco != null) {
@@ -66,6 +69,7 @@ public class AlunoController {
             @PathVariable Long id,
             @RequestBody AtualizarStatusAlunoRequest statusRequest) {
 
+        // Busca o aluno que terá o status alterado
         Aluno alunoBanco = alunoRepository.findById(id).orElse(null);
 
         if (alunoBanco != null) {
@@ -90,6 +94,7 @@ public class AlunoController {
             @PathVariable Long id,
             @RequestBody Aluno aluno) {
 
+        // Busca o aluno antes de atualizar os dados
         Aluno alunoBanco = alunoRepository.findById(id).orElse(null);
 
         if (alunoBanco != null) {
@@ -117,6 +122,7 @@ public class AlunoController {
     )
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
 
+        // Busca o aluno que será marcado como excluído
         Aluno alunoBanco = alunoRepository.findById(id).orElse(null);
 
         if (alunoBanco != null) {

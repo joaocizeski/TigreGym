@@ -30,8 +30,10 @@ public class TokenService {
 
         try{
 
+            // Usa a chave secreta para assinar o token
             Algorithm algorithm =Algorithm.HMAC256(secret);
 
+            // Monta o token com emissor, usuário e tempo de expiração
             String token = JWT.create()
                     .withIssuer(emissor)
                     .withSubject(subject)
@@ -47,8 +49,10 @@ public class TokenService {
     }
 
     public DecodedJWT verificarToken(String token) throws JWTVerificationException {
+        // Usa a mesma chave para conferir se o token é válido
         Algorithm algorithm =Algorithm.HMAC256(secret);
 
+        // Cria o verificador usando o emissor configurado
         JWTVerifier verificador = JWT.require(algorithm).withIssuer(emissor).build();
 
         return verificador.verify(token);
@@ -57,12 +61,13 @@ public class TokenService {
 
     private Instant getDataExpiracao(){
 
-        //pegar data atual
+        // Pega a data e hora atual
         var dataAtual = LocalDateTime.now();
-        //Adicionar ou diminuir tempo da data atual
+
+        // Adiciona os minutos de validade do token
         dataAtual = dataAtual.plusMinutes(expiracao);
 
-        //Converter em instant
+        // Converte a data para o formato usado pelo JWT
         return dataAtual.toInstant(ZoneOffset.of("-03:00"));
     }
 

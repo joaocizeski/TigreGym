@@ -20,8 +20,10 @@ public class JwtFIlter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        // Pega a rota que está sendo acessada
         String uri = request.getRequestURI();
 
+        // Verifica se a rota está na lista que pode passar sem validar o token
         if (uri.startsWith("/swagger-ui")
         || uri.startsWith("/v2/api-docs")
         || uri.startsWith("/v3/api-docs")
@@ -36,19 +38,23 @@ public class JwtFIlter extends OncePerRequestFilter {
             return;
         }
 
+        // Pega o token enviado no cabeçalho da requisição
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")){
+             // Remove o texto Bearer e deixa somente o token
              String token = authHeader.replace("Bearer ", "");
 
              try {
 
+                 // Confere se o token recebido é válido
                  var jwtValidator = tokenService.verificarToken(token);
 
                  System.out.println(jwtValidator.getSubject());
 
              } catch (Exception e) {
 
+                 // Retorna 401 quando o token não é válido
                  response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                  response.getWriter().println("Token inválido");
                  return;
@@ -61,6 +67,7 @@ public class JwtFIlter extends OncePerRequestFilter {
             return;
         }
 
+        // Continua a requisição depois da validação
         filterChain.doFilter(request,response);
 
     }

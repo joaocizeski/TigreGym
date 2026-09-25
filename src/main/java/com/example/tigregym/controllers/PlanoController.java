@@ -25,6 +25,7 @@ public class PlanoController {
             description = "Método responsável por efetuar a consulta de todos os planos sem filtro")
     public ResponseEntity<?> listarTodos(){
 
+        // Busca os planos que ainda não foram excluídos
         return ResponseEntity.ok(planoRepository.findByStatusNot(EnumStatusPlano.EXCLUIDO));
 
     }
@@ -40,6 +41,7 @@ public class PlanoController {
             return ResponseEntity.badRequest().build();
         }
 
+        // Salva o novo plano no banco
         var planoBanco = planoRepository.save(plano);
         return ResponseEntity.ok(planoBanco);
 
@@ -52,6 +54,7 @@ public class PlanoController {
     )
     public ResponseEntity<Plano> listarPorId(@PathVariable Long id) {
 
+        // Busca o plano pelo código informado
         Plano planoBanco = planoRepository.findById(id).orElse(null);
 
         if (planoBanco != null) {
@@ -70,6 +73,7 @@ public class PlanoController {
             @PathVariable Long id,
             @RequestBody AtualizarStatusPlanoRequest statusRequest) {
 
+        // Busca o plano que terá o status alterado
         Plano planoBanco = planoRepository.findById(id).orElse(null);
 
         if (planoBanco != null) {
@@ -94,6 +98,7 @@ public class PlanoController {
             @PathVariable Long id,
             @RequestBody Plano plano) {
 
+        // Busca o plano antes de atualizar os dados
         Plano planoBanco = planoRepository.findById(id).orElse(null);
 
         if (planoBanco != null) {
@@ -125,6 +130,7 @@ public class PlanoController {
     )
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
 
+        // Busca o plano que será marcado como excluído
         Plano planoBanco = planoRepository.findById(id).orElse(null);
 
         if (planoBanco != null) {

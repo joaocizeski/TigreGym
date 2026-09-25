@@ -31,8 +31,10 @@ public class AuthController {
     @Operation(description = "Método de login", summary = "Autenticação de usuário")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
+        // Confere se existe um usuário com o e-mail e a senha informados
         if (usuarioRepository.existsUsuarioByEmailAndSenha(request.email(), request.senha())) {
 
+            // Gera o token que será usado depois do login
             var token = tokenService.gerarToken(request.email());
 
             return ResponseEntity.ok(new LoginResponse(token));
@@ -73,6 +75,7 @@ public class AuthController {
     )
     public ResponseEntity<?> recuperarSenha(@RequestBody RecuperarSenhaRequest request) {
 
+        // Procura o usuário pelo e-mail e CPF
         Usuario usuarioBanco = usuarioRepository
                 .findByEmailAndCpf(request.email(), request.cpf())
                 .orElse(null);

@@ -1,61 +1,38 @@
+import Link from "next/link";
+import UsuarioForm from "../components/UsuarioForm";
+
 export default function NovaMatricula() {
   return (
-    <div className="min-h-screen w-full bg-black flex items-center justify-center p-8">
-      <div className="w-full max-w-2xl bg-zinc-950 border border-zinc-800 rounded-2xl p-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white">Nova Matrícula</h1>
+    <div className="w-full bg-black px-6 py-10 md:px-10">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-10">
+          <Link
+            href="/matricula"
+            className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition hover:text-yellow-400"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 transition hover:border-yellow-400/40">
+              ←
+            </span>
 
-          <p className="text-zinc-400 mt-2">Preencha os dados da matrícula</p>
+            Voltar para Listagem
+          </Link>
+
+          <div className="mt-6">
+            <p className="text-yellow-400 text-sm font-bold tracking-[3px] mb-2">
+              TIGREGYM
+            </p>
+
+            <h1 className="text-4xl md:text-5xl font-black text-white">
+              Nova Matrícula
+            </h1>
+
+            <p className="text-zinc-500 mt-3">
+              Preencha os dados para registrar uma nova matrícula.
+            </p>
+          </div>
         </div>
 
-        <form className="space-y-5">
-          <div>
-            <label className="text-zinc-300">Aluno</label>
-
-            <input
-              name="aluno"
-              placeholder="Digite o aluno"
-              className="w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white"
-            />
-          </div>
-
-          <div>
-            <label className="text-zinc-300">Plano</label>
-
-            <input
-              name="plano"
-              placeholder="Digite o plano"
-              className="w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white"
-            />
-          </div>
-
-          <div>
-            <label className="text-zinc-300">Data de início</label>
-
-            <input
-              name="dataInicio"
-              type="datetime-local"
-              className="w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white"
-            />
-          </div>
-
-          <div>
-            <label className="text-zinc-300">Data de vencimento</label>
-
-            <input
-              name="dataVencimento"
-              type="datetime-local"
-              className="w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-yellow-400 text-black font-semibold py-3 rounded-lg"
-          >
-            Cadastrar Matrícula
-          </button>
-        </form>
+        <UsuarioForm />
       </div>
     </div>
   );

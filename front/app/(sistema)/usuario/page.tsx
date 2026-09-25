@@ -24,6 +24,49 @@ export default function Usuarios() {
     }
   };
 
+  // Faz a exclusão sem apagar o usuário do banco
+  const handleDeletarUsuario = async (usuario: Usuario) => {
+    var dadosRetorno = await axios.delete(
+      "http://localhost:8080/usuarios/" + usuario.id + "/excluir"
+    );
+
+    if (dadosRetorno.status == 200) {
+      alert("Excluído com sucesso!");
+    } else {
+      alert(dadosRetorno.data);
+      return;
+    }
+
+    // Atualiza a lista depois da exclusão
+    carregarDados();
+  };
+
+  // Troca o status entre ATIVO e BLOQUEADO
+  const handleAlterarStatusUsuario = async (usuario: Usuario) => {
+    var novoStatus = {};
+
+    if (usuario.status === "ATIVO") {
+      novoStatus = { status: "BLOQUEADO" };
+    } else {
+      novoStatus = { status: "ATIVO" };
+    }
+
+    var dadosRetorno = await axios.patch(
+      "http://localhost:8080/usuarios/" + usuario.id + "/status",
+      novoStatus
+    );
+
+    if (dadosRetorno.status == 200) {
+      alert("Status atualizado com sucesso!");
+    } else {
+      alert(dadosRetorno.data);
+      return;
+    }
+
+    // Atualiza a lista com o novo status
+    carregarDados();
+  };
+
   return (
     <div className="w-full bg-black px-6 py-8 md:px-10">
       <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
@@ -72,6 +115,7 @@ export default function Usuarios() {
                   <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-wider">
                     Status
                   </th>
+
                   <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase tracking-wider">
                     Ações
                   </th>
@@ -105,8 +149,34 @@ export default function Usuarios() {
                         {usuario.status}
                       </span>
                     </td>
+
                     <td className="px-6 py-5 text-sm font-medium">
-                      <Link href={`/usuario/${usuario.id}/editar`}>Editar</Link>
+                      <div className="flex items-center gap-4">
+                        <Link
+                          href={"/usuario/" + usuario.id + "/editar"}
+                          className="text-yellow-400 hover:text-yellow-300"
+                        >
+                          Editar
+                        </Link>
+
+                        <button
+                          onClick={() => handleDeletarUsuario(usuario)}
+                          className="text-red-500 hover:text-red-400"
+                        >
+                          Excluir
+                        </button>
+
+                        <button
+                          onClick={() => handleAlterarStatusUsuario(usuario)}
+                          className={
+                            usuario.status === "BLOQUEADO"
+                              ? "text-orange-400 hover:text-orange-300"
+                              : "text-green-400 hover:text-green-300"
+                          }
+                        >
+                          {usuario.status}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -114,7 +184,7 @@ export default function Usuarios() {
                 {usuarios.length === 0 && (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={6}
                       className="px-6 py-14 text-center text-zinc-500 italic"
                     >
                       Nenhum usuário encontrado!

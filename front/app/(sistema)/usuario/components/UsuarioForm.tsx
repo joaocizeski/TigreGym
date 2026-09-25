@@ -9,12 +9,12 @@ import axios from "axios";
 export default function UsuarioForm({ usuarioExistente }: UsuarioFormProps) {
   const router = useRouter();
 
-  //
+  // Usa os dados existentes quando for edição
   const [usuario, setUsuario] = useState<Usuario>(
-    usuarioExistente ||
-    new Usuario(null, "", "", "ATIVO", "", "")
+    usuarioExistente || new Usuario(null, "", "", "ATIVO", "", "")
   );
 
+  // Muda somente o campo que foi digitado
   const handlerChange = (
     campo: "nome" | "email" | "cpf" | "senha",
     valor: string
@@ -33,20 +33,35 @@ export default function UsuarioForm({ usuarioExistente }: UsuarioFormProps) {
   };
 
   const handlerSalvar = async (formData: FormData) => {
-    try {
-      const dadosRetorno = await axios.post(
+    // Se o usuário já existe, edita ele
+    if (usuarioExistente) {
+      var dadosRetorno = await axios.put(
+        "http://localhost:8080/usuarios/" + usuario.id,
+        usuario
+      );
+
+      if (dadosRetorno.status == 200) {
+        alert("Usuário foi salvo com sucesso!");
+      } else {
+        alert(dadosRetorno.data);
+        return;
+      }
+    } else {
+      // Se não existe, cria um novo
+      var dadosRetorno = await axios.post(
         "http://localhost:8080/usuarios",
         usuario
       );
 
       if (dadosRetorno.status == 200) {
-        alert("Usuário foi salvo com sucesso");
-        router.push("/usuario");
+        alert("Usuário foi salvo com sucesso!");
+      } else {
+        alert(dadosRetorno.data);
+        return;
       }
-    } catch (error) {
-      console.log(error);
-      alert("Erro ao salvar usuário");
     }
+
+    router.push("/usuario");
   };
 
   return (

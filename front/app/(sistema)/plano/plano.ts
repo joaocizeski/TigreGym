@@ -5,6 +5,10 @@ export class Plano {
     public descricao: string,
     public valor: string,
     public duracaoEmMeses: string,
-    public status: string,
+    public status: string
   ) {}
+}
+
+export interface PlanoFormProps {
+  planoExistente?: Plano;
 }

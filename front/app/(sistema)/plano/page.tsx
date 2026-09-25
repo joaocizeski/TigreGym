@@ -22,6 +22,47 @@ export default function Planos() {
     }
   };
 
+  // Faz a exclusão sem apagar o plano do banco
+  const handleDeletarPlano = async (plano: Plano) => {
+    var dadosRetorno = await axios.delete(
+      "http://localhost:8080/planos/" + plano.id + "/excluir"
+    );
+
+    if (dadosRetorno.status == 200) {
+      alert("Excluído com sucesso!");
+    } else {
+      alert(dadosRetorno.data);
+      return;
+    }
+
+    carregarDados();
+  };
+
+  // Troca o status entre ATIVO e BLOQUEADO
+  const handleAlterarStatusPlano = async (plano: Plano) => {
+    var novoStatus = {};
+
+    if (plano.status === "ATIVO") {
+      novoStatus = { status: "BLOQUEADO" };
+    } else {
+      novoStatus = { status: "ATIVO" };
+    }
+
+    var dadosRetorno = await axios.patch(
+      "http://localhost:8080/planos/" + plano.id + "/status",
+      novoStatus
+    );
+
+    if (dadosRetorno.status == 200) {
+      alert("Status atualizado com sucesso!");
+    } else {
+      alert(dadosRetorno.data);
+      return;
+    }
+
+    carregarDados();
+  };
+
   return (
     <div className="w-full bg-[#070707] text-white px-6 py-10 md:px-10">
       <div className="max-w-7xl mx-auto">
@@ -82,6 +123,33 @@ export default function Planos() {
                 <span className="text-zinc-500">Duração</span>
 
                 <span className="font-semibold">{plano.duracaoEmMeses}</span>
+              </div>
+
+              <div className="flex items-center gap-4 mt-6 pt-5 border-t border-zinc-800">
+                <Link
+                  href={"/plano/" + plano.id + "/editar"}
+                  className="text-yellow-400 hover:text-yellow-300"
+                >
+                  Editar
+                </Link>
+
+                <button
+                  onClick={() => handleDeletarPlano(plano)}
+                  className="text-red-500 hover:text-red-400"
+                >
+                  Excluir
+                </button>
+
+                <button
+                  onClick={() => handleAlterarStatusPlano(plano)}
+                  className={
+                    plano.status === "BLOQUEADO"
+                      ? "text-orange-400 hover:text-orange-300"
+                      : "text-green-400 hover:text-green-300"
+                  }
+                >
+                  {plano.status}
+                </button>
               </div>
             </div>
           ))}

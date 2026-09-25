@@ -1,20 +1,46 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import AlunoForm from "../../components/AlunoForm";
+import { useEffect, useState } from "react";
+import { Aluno } from "../../aluno";
+import axios from "axios";
 
 export default function EditarAluno() {
   const parametro = useParams();
 
+  // Pega o código que veio pela URL
   const codigo = Number(parametro.codigo);
+
+  const [aluno, setAluno] = useState<Aluno | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    buscarDados();
+  }, []);
+
+  // Busca o aluno pelo código
+  const buscarDados = async () => {
+    const valorAlunoBack = await axios.get<Aluno>(
+      "http://localhost:8080/alunos/" + codigo
+    );
+
+    if (valorAlunoBack.status == 200) {
+      setAluno(valorAlunoBack.data);
+    } else {
+      router.push("/aluno");
+    }
+  };
+
+  if (!aluno) {
+    return <div className="p-8 text-white">Carregando dados ...</div>;
+  }
 
   return (
     <div className="w-full bg-black px-6 py-10 md:px-10">
       <div className="max-w-4xl mx-auto">
-
         <div className="mb-10">
-
           <Link
             href="/aluno"
             className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition hover:text-yellow-400"
@@ -39,11 +65,9 @@ export default function EditarAluno() {
               Preencha os dados para editar o aluno.
             </p>
           </div>
-
         </div>
 
-        <AlunoForm />
-
+        <AlunoForm alunoExistente={aluno} />
       </div>
     </div>
   );

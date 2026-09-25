@@ -15,13 +15,54 @@ export default function Matriculas() {
   const carregarDados = async () => {
     try {
       const dados = await axios.get<Matricula[]>(
-        "http://localhost:8080/matriculas",
+        "http://localhost:8080/matriculas"
       );
 
       setMatriculas(dados.data);
     } catch (error) {
       alert("Erro ao carregar dados!");
     }
+  };
+
+  // Faz a exclusão sem apagar a matrícula do banco
+  const handleDeletarMatricula = async (matricula: Matricula) => {
+    var dadosRetorno = await axios.delete(
+      "http://localhost:8080/matriculas/" + matricula.id + "/excluir"
+    );
+
+    if (dadosRetorno.status == 200) {
+      alert("Excluído com sucesso!");
+    } else {
+      alert(dadosRetorno.data);
+      return;
+    }
+
+    carregarDados();
+  };
+
+  // Troca o status entre ATIVO e BLOQUEADO
+  const handleAlterarStatusMatricula = async (matricula: Matricula) => {
+    var novoStatus = {};
+
+    if (matricula.status === "ATIVO") {
+      novoStatus = { status: "BLOQUEADO" };
+    } else {
+      novoStatus = { status: "ATIVO" };
+    }
+
+    var dadosRetorno = await axios.patch(
+      "http://localhost:8080/matriculas/" + matricula.id + "/status",
+      novoStatus
+    );
+
+    if (dadosRetorno.status == 200) {
+      alert("Status atualizado com sucesso!");
+    } else {
+      alert(dadosRetorno.data);
+      return;
+    }
+
+    carregarDados();
   };
 
   return (
@@ -72,7 +113,7 @@ export default function Matriculas() {
             <p className="text-3xl font-black text-red-400 mt-2">
               {
                 matriculas.filter(
-                  (matricula) => matricula.status == "BLOQUEADO",
+                  (matricula) => matricula.status == "BLOQUEADO"
                 ).length
               }
             </p>
@@ -80,20 +121,16 @@ export default function Matriculas() {
         </div>
 
         <div className="bg-zinc-950 border border-zinc-800 rounded-2xl overflow-x-auto">
-          <table className="w-full text-left min-w-[900px]">
+          <table className="w-full text-left min-w-[1000px]">
             <thead className="bg-zinc-900/80">
               <tr className="text-zinc-400 text-sm">
                 <th className="p-5">Código</th>
-
                 <th className="p-5">Aluno</th>
-
                 <th className="p-5">Plano</th>
-
                 <th className="p-5">Início</th>
-
                 <th className="p-5">Vencimento</th>
-
                 <th className="p-5">Status</th>
+                <th className="p-5">Ações</th>
               </tr>
             </thead>
 
@@ -120,12 +157,41 @@ export default function Matriculas() {
                       {matricula.status}
                     </span>
                   </td>
+
+                  <td className="p-5">
+                    <div className="flex items-center gap-4">
+                      <Link
+                        href={"/matricula/" + matricula.id + "/editar"}
+                        className="text-yellow-400 hover:text-yellow-300"
+                      >
+                        Editar
+                      </Link>
+
+                      <button
+                        onClick={() => handleDeletarMatricula(matricula)}
+                        className="text-red-500 hover:text-red-400"
+                      >
+                        Excluir
+                      </button>
+
+                      <button
+                        onClick={() => handleAlterarStatusMatricula(matricula)}
+                        className={
+                          matricula.status === "BLOQUEADO"
+                            ? "text-orange-400 hover:text-orange-300"
+                            : "text-green-400 hover:text-green-300"
+                        }
+                      >
+                        {matricula.status}
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
 
               {matriculas.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="p-10 text-center text-zinc-500">
+                  <td colSpan={7} className="p-10 text-center text-zinc-500">
                     Nenhuma matrícula encontrada!
                   </td>
                 </tr>

@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import UsuarioForm from "../../components/UsuarioForm";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Usuario } from "../../usuario";
 import axios from "axios";
-import { useRouter } from "next/router";
 
 export default function EditarUsuario() {
   const parametro = useParams();
+
+  // Pega o código que veio pela URL
   const codigo = Number(parametro.codigo);
+
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const router = useRouter();
 
@@ -18,6 +20,7 @@ export default function EditarUsuario() {
     buscarDados();
   }, []);
 
+  // Busca o usuário pelo código
   const buscarDados = async () => {
     const valorUsuarioBack = await axios.get<Usuario>(
       "http://localhost:8080/usuarios/" + codigo
@@ -25,14 +28,14 @@ export default function EditarUsuario() {
 
     if (valorUsuarioBack.status == 200) {
       setUsuario(valorUsuarioBack.data);
-    } else{
-      
+    } else {
+      router.push("/usuario");
     }
-
-    router.push("/usuarios");
   };
 
-  if (!usuario) return <div className="p-8">Carregando dados ...</div>;
+  if (!usuario) {
+    return <div className="p-8 text-white">Carregando dados ...</div>;
+  }
 
   return (
     <div className="w-full bg-black px-6 py-10 md:px-10">
@@ -45,6 +48,7 @@ export default function EditarUsuario() {
             <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 transition hover:border-yellow-400/40">
               ←
             </span>
+
             Voltar para Listagem
           </Link>
 

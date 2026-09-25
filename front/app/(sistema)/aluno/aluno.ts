@@ -6,6 +6,10 @@ export class Aluno {
     public dataNascimento: string,
     public telefone: string,
     public email: string,
-    public status: string,
+    public status: string
   ) {}
+}
+
+export interface AlunoFormProps {
+  alunoExistente?: Aluno;
 }

@@ -23,6 +23,47 @@ export default function Alunos() {
     }
   };
 
+  // Faz a exclusão sem apagar o aluno do banco
+  const handleDeletarAluno = async (aluno: Aluno) => {
+    var dadosRetorno = await axios.delete(
+      "http://localhost:8080/alunos/" + aluno.id + "/excluir"
+    );
+
+    if (dadosRetorno.status == 200) {
+      alert("Excluído com sucesso!");
+    } else {
+      alert(dadosRetorno.data);
+      return;
+    }
+
+    carregarDados();
+  };
+
+  // Troca o status entre ATIVO e BLOQUEADO
+  const handleAlterarStatusAluno = async (aluno: Aluno) => {
+    var novoStatus = {};
+
+    if (aluno.status === "ATIVO") {
+      novoStatus = { status: "BLOQUEADO" };
+    } else {
+      novoStatus = { status: "ATIVO" };
+    }
+
+    var dadosRetorno = await axios.patch(
+      "http://localhost:8080/alunos/" + aluno.id + "/status",
+      novoStatus
+    );
+
+    if (dadosRetorno.status == 200) {
+      alert("Status atualizado com sucesso!");
+    } else {
+      alert(dadosRetorno.data);
+      return;
+    }
+
+    carregarDados();
+  };
+
   return (
     <div className="w-full bg-[#070707] text-white px-6 py-10 md:px-10">
       <div className="max-w-7xl mx-auto">
@@ -72,22 +113,17 @@ export default function Alunos() {
         </div>
 
         <div className="bg-zinc-950 border border-zinc-800 rounded-2xl overflow-x-auto">
-          <table className="w-full text-left min-w-[1000px]">
+          <table className="w-full text-left min-w-[1100px]">
             <thead className="bg-zinc-900/80">
               <tr className="text-zinc-400 text-sm">
                 <th className="p-5">Código</th>
-
                 <th className="p-5">Nome</th>
-
                 <th className="p-5">CPF</th>
-
                 <th className="p-5">Nascimento</th>
-
                 <th className="p-5">Telefone</th>
-
                 <th className="p-5">E-mail</th>
-
                 <th className="p-5">Status</th>
+                <th className="p-5">Ações</th>
               </tr>
             </thead>
 
@@ -114,12 +150,41 @@ export default function Alunos() {
                       {aluno.status}
                     </span>
                   </td>
+
+                  <td className="p-5">
+                    <div className="flex items-center gap-4">
+                      <Link
+                        href={"/aluno/" + aluno.id + "/editar"}
+                        className="text-yellow-400 hover:text-yellow-300"
+                      >
+                        Editar
+                      </Link>
+
+                      <button
+                        onClick={() => handleDeletarAluno(aluno)}
+                        className="text-red-500 hover:text-red-400"
+                      >
+                        Excluir
+                      </button>
+
+                      <button
+                        onClick={() => handleAlterarStatusAluno(aluno)}
+                        className={
+                          aluno.status === "BLOQUEADO"
+                            ? "text-orange-400 hover:text-orange-300"
+                            : "text-green-400 hover:text-green-300"
+                        }
+                      >
+                        {aluno.status}
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
 
               {alunos.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-zinc-500">
+                  <td colSpan={8} className="p-10 text-center text-zinc-500">
                     Nenhum aluno encontrado!
                   </td>
                 </tr>

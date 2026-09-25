@@ -146,10 +146,10 @@ export default function Matriculas() {
 
                   <td className="p-5 text-zinc-400">{matricula.plano}</td>
 
-                  <td className="p-5 text-zinc-400">{matricula.dataInicio}</td>
+                  <td className="p-5 text-zinc-400">{new Date(matricula.dataInicio).toLocaleString("pt-BR")}</td>
 
                   <td className="p-5 text-zinc-400">
-                    {matricula.dataVencimento}
+                    {new Date(matricula.dataVencimento).toLocaleString("pt-BR")}
                   </td>
 
                   <td className="p-5">

@@ -18,7 +18,7 @@ public class Plano {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
+    public Long id;
 
     public String nome;
 
@@ -26,7 +26,7 @@ public class Plano {
 
     public String valor;
 
-    public LocalDateTime duracaoEmMeses;
+    public Integer duracaoEmMeses;
 
     public EnumStatusPlano status = EnumStatusPlano.ATIVO;
 }

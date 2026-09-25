@@ -4,7 +4,7 @@ export class Plano {
     public nome: string,
     public descricao: string,
     public valor: string,
-    public duracaoEmMeses: string,
+    public duracaoEmMeses: number,
     public status: string
   ) {}
 }

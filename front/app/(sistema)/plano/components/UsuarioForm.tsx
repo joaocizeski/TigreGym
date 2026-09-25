@@ -11,7 +11,7 @@ export default function UsuarioForm({ planoExistente }: PlanoFormProps) {
 
   // Usa os dados existentes quando for edição
   const [plano, setPlano] = useState<Plano>(
-    planoExistente || new Plano(null, "", "", "", "", "ATIVO")
+    planoExistente || new Plano(null, "", "", "", 0, "ATIVO")
   );
 
   // Muda somente o campo que foi digitado
@@ -26,7 +26,9 @@ export default function UsuarioForm({ planoExistente }: PlanoFormProps) {
           campo === "nome" ? valor : valorAnterior.nome,
           campo === "descricao" ? valor : valorAnterior.descricao,
           campo === "valor" ? valor : valorAnterior.valor,
-          campo === "duracaoEmMeses" ? valor : valorAnterior.duracaoEmMeses,
+          campo === "duracaoEmMeses"
+            ? Number(valor)
+            : valorAnterior.duracaoEmMeses,
           valorAnterior.status
         )
     );
@@ -127,16 +129,19 @@ export default function UsuarioForm({ planoExistente }: PlanoFormProps) {
 
           <div>
             <label className="block text-sm font-semibold text-zinc-300 mb-2">
-              Duração:
+              Duração em meses:
             </label>
 
             <input
               name="duracaoEmMeses"
-              type="datetime-local"
-              value={plano.duracaoEmMeses}
+              type="number"
+              min={1}
+              step={1}
+              value={plano.duracaoEmMeses || ""}
               required
               onChange={(e) => handlerChange("duracaoEmMeses", e.target.value)}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-white outline-none focus:border-yellow-400 transition"
+              placeholder="Ex.: 12"
             />
           </div>
         </div>

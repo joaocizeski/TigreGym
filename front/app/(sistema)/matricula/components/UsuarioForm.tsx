@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Matricula, MatriculaFormProps } from "../matricula";
+import { Aluno } from "../../aluno/aluno";
+import { Plano } from "../../plano/plano";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -11,12 +13,34 @@ export default function UsuarioForm({
 }: MatriculaFormProps) {
   const router = useRouter();
 
+  const [alunos, setAlunos] = useState<Aluno[]>([]);
+  const [planos, setPlanos] = useState<Plano[]>([]);
+
   // Usa os dados existentes quando for edição
   const [matricula, setMatricula] = useState<Matricula>(
     matriculaExistente || new Matricula(null, "", "", "", "", "ATIVO")
   );
 
-  // Muda somente o campo que foi digitado
+  useEffect(() => {
+    carregarOpcoes();
+  }, []);
+
+  // Busca os alunos e planos já cadastrados no banco
+  const carregarOpcoes = async () => {
+    try {
+      const [dadosAlunos, dadosPlanos] = await Promise.all([
+        axios.get<Aluno[]>("http://localhost:8080/alunos"),
+        axios.get<Plano[]>("http://localhost:8080/planos"),
+      ]);
+
+      setAlunos(dadosAlunos.data);
+      setPlanos(dadosPlanos.data);
+    } catch (error) {
+      alert("Erro ao carregar alunos e planos!");
+    }
+  };
+
+  // Muda somente o campo que foi escolhido ou digitado
   const handlerChange = (
     campo: "aluno" | "plano" | "dataInicio" | "dataVencimento",
     valor: string
@@ -89,14 +113,21 @@ export default function UsuarioForm({
               Aluno:
             </label>
 
-            <input
+            <select
               name="aluno"
               value={matricula.aluno}
               required
               onChange={(e) => handlerChange("aluno", e.target.value)}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-white outline-none focus:border-yellow-400 transition"
-              placeholder="Digite o aluno"
-            />
+            >
+              <option value="">Selecione um aluno</option>
+
+              {alunos.map((aluno) => (
+                <option key={aluno.id} value={aluno.nome}>
+                  {aluno.nome}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -104,14 +135,26 @@ export default function UsuarioForm({
               Plano:
             </label>
 
-            <input
+            <select
               name="plano"
               value={matricula.plano}
               required
               onChange={(e) => handlerChange("plano", e.target.value)}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-white outline-none focus:border-yellow-400 transition"
-              placeholder="Digite o plano"
-            />
+            >
+              <option value="">Selecione um plano</option>
+
+              {planos.map((plano) => (
+                <option key={plano.id} value={plano.nome}>
+                  {plano.nome}
+                  {plano.duracaoEmMeses
+                    ? ` - ${plano.duracaoEmMeses} ${
+                        plano.duracaoEmMeses === 1 ? "mês" : "meses"
+                      }`
+                    : ""}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

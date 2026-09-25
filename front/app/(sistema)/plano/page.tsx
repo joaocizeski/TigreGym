@@ -122,7 +122,13 @@ export default function Planos() {
               <div className="flex items-center justify-between mt-6 text-sm">
                 <span className="text-zinc-500">Duração</span>
 
-                <span className="font-semibold">{plano.duracaoEmMeses}</span>
+                <span className="font-semibold">
+                  {plano.duracaoEmMeses
+                    ? `${plano.duracaoEmMeses} ${
+                        plano.duracaoEmMeses === 1 ? "mês" : "meses"
+                      }`
+                    : "Não definida"}
+                </span>
               </div>
 
               <div className="flex items-center gap-4 mt-6 pt-5 border-t border-zinc-800">

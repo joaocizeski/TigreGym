@@ -35,6 +35,11 @@ public class PlanoController {
             description = "Método responsável por efetuar a criação de novos planos!")
     public ResponseEntity<Plano> criar(@RequestBody Plano plano){
 
+        // Não permite duração vazia, zero ou negativa
+        if (plano.getDuracaoEmMeses() == null || plano.getDuracaoEmMeses() < 1) {
+            return ResponseEntity.badRequest().build();
+        }
+
         var planoBanco = planoRepository.save(plano);
         return ResponseEntity.ok(planoBanco);
 
@@ -92,6 +97,11 @@ public class PlanoController {
         Plano planoBanco = planoRepository.findById(id).orElse(null);
 
         if (planoBanco != null) {
+
+            // Não permite duração vazia, zero ou negativa
+            if (plano.getDuracaoEmMeses() == null || plano.getDuracaoEmMeses() < 1) {
+                return ResponseEntity.badRequest().build();
+            }
 
             // Atualiza os dados do plano
             planoBanco.setNome(plano.getNome());

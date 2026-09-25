@@ -6,18 +6,23 @@ import { useEffect, useState } from "react";
 import { Usuario } from "./usuario";
 
 export default function Usuarios() {
+  // Guarda a lista de usuários que será mostrada na tela
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
+  // Quando a página abrir, carrega os dados cadastrados
   useEffect(() => {
     carregarDados();
   }, []);
 
+  // Busca no backend a lista de usuários
   const carregarDados = async () => {
     try {
+      // Faz uma requisição GET para o backend
       const dados = await axios.get<Usuario[]>(
         "http://localhost:8080/usuarios"
       );
 
+      // Guarda os usuários recebidos para atualizar a tela
       setUsuarios(dados.data);
     } catch (error) {
       alert("Erro ao carregar dados!");

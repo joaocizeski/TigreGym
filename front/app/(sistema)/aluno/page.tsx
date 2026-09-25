@@ -6,16 +6,21 @@ import { useEffect, useState } from "react";
 import { Aluno } from "./aluno";
 
 export default function Alunos() {
+  // Guarda a lista de alunos que será mostrada na tela
   const [alunos, setAlunos] = useState<Aluno[]>([]);
 
+  // Quando a página abrir, carrega os dados cadastrados
   useEffect(() => {
     carregarDados();
   }, []);
 
+  // Busca no backend a lista de alunos
   const carregarDados = async () => {
     try {
+      // Faz uma requisição GET para o backend
       const dados = await axios.get<Aluno[]>("http://localhost:8080/alunos");
 
+      // Guarda os alunos recebidos para atualizar a tela
       setAlunos(dados.data);
     } catch (error) {
       console.log(error);
@@ -128,6 +133,7 @@ export default function Alunos() {
             </thead>
 
             <tbody>
+              {/* Percorre a lista de alunos e cria uma linha para cada item */}
               {alunos.map((aluno) => (
                 <tr
                   key={aluno.id}

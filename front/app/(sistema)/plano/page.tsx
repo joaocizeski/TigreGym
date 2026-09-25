@@ -6,16 +6,21 @@ import { useEffect, useState } from "react";
 import { Plano } from "./plano";
 
 export default function Planos() {
+  // Guarda a lista de planos que será mostrada na tela
   const [planos, setPlanos] = useState<Plano[]>([]);
 
+  // Quando a página abrir, carrega os dados cadastrados
   useEffect(() => {
     carregarDados();
   }, []);
 
+  // Busca no backend a lista de planos
   const carregarDados = async () => {
     try {
+      // Faz uma requisição GET para o backend
       const dados = await axios.get<Plano[]>("http://localhost:8080/planos");
 
+      // Guarda os planos recebidos para atualizar a tela
       setPlanos(dados.data);
     } catch (error) {
       alert("Erro ao carregar dados!");

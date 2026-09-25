@@ -6,18 +6,23 @@ import { useEffect, useState } from "react";
 import { Matricula } from "./matricula";
 
 export default function Matriculas() {
+  // Guarda a lista de matrículas que será mostrada na tela
   const [matriculas, setMatriculas] = useState<Matricula[]>([]);
 
+  // Quando a página abrir, carrega os dados cadastrados
   useEffect(() => {
     carregarDados();
   }, []);
 
+  // Busca no backend a lista de matrículas
   const carregarDados = async () => {
     try {
+      // Faz uma requisição GET para o backend
       const dados = await axios.get<Matricula[]>(
         "http://localhost:8080/matriculas"
       );
 
+      // Guarda os matrículas recebidos para atualizar a tela
       setMatriculas(dados.data);
     } catch (error) {
       alert("Erro ao carregar dados!");
@@ -146,6 +151,7 @@ export default function Matriculas() {
 
                   <td className="p-5 text-zinc-400">{matricula.plano}</td>
 
+                  {/* Converte as datas para o formato brasileiro somente na exibição */}
                   <td className="p-5 text-zinc-400">{new Date(matricula.dataInicio).toLocaleString("pt-BR")}</td>
 
                   <td className="p-5 text-zinc-400">

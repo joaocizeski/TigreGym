@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import UsuarioForm from "../../components/UsuarioForm";
+import UsuarioForm from "../../components/MatriculaForm";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Matricula } from "../../matricula";

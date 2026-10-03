@@ -1,5 +1,5 @@
 import Link from "next/link";
-import UsuarioForm from "../components/UsuarioForm";
+import UsuarioForm from "../components/MatriculaForm";
 
 export default function NovaMatricula() {
   return (

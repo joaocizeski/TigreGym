@@ -1,6 +1,8 @@
 package com.example.tigregym.presentation;
 
 import com.example.tigregym.application.DTOs.AtualizarStatusAlunoRequest;
+import com.example.tigregym.application.DTOs.AlunoResponse;
+import com.example.tigregym.application.services.AlunoService;
 import com.example.tigregym.domain.entities.Aluno;
 import com.example.tigregym.domain.entities.EnumStatusAluno;
 import com.example.tigregym.domain.repository.AlunoRepository;
@@ -11,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/alunos")
 @Tag(name = "Alunos",
@@ -20,13 +24,16 @@ public class AlunoController {
     @Autowired
     private AlunoRepository alunoRepository;
 
+    @Autowired
+    private AlunoService alunoService;
+
     @GetMapping
     @Operation(summary = "Método de consulta da lista de alunos!",
             description = "Método responsável por efetuar a consulta de todos os alunos sem filtro")
-    public ResponseEntity<?> listarTodos(){
+    public ResponseEntity<List<AlunoResponse>> listarTodos(){
 
         // Busca os alunos que ainda não foram excluídos
-        return ResponseEntity.ok(alunoRepository.findByStatusNot(EnumStatusAluno.EXCLUIDO));
+        return ResponseEntity.ok(alunoService.listarTodosAlunoTable());
 
     }
 

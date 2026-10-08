@@ -1,6 +1,8 @@
 package com.example.tigregym.presentation;
 
 import com.example.tigregym.application.DTOs.AtualizarStatusMatriculaRequest;
+import com.example.tigregym.application.DTOs.MatriculaResponse;
+import com.example.tigregym.application.services.MatriculaService;
 import com.example.tigregym.domain.entities.EnumStatusMatricula;
 import com.example.tigregym.domain.entities.Matricula;
 import com.example.tigregym.domain.repository.MatriculaRepository;
@@ -11,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/matriculas")
 @Tag(name = "Matrículas",
@@ -20,13 +24,16 @@ public class MatriculaController {
     @Autowired
     private MatriculaRepository matriculaRepository;
 
+    @Autowired
+    private MatriculaService matriculaService;
+
     @GetMapping
     @Operation(summary = "Método de consulta da lista de matrículas!",
             description = "Método responsável por efetuar a consulta de todas as matrículas sem filtro")
-    public ResponseEntity<?> listarTodos(){
+    public ResponseEntity<List<MatriculaResponse>> listarTodos(){
 
         // Busca as matrículas que ainda não foram excluídas
-        return ResponseEntity.ok(matriculaRepository.findByStatusNot(EnumStatusMatricula.EXCLUIDO));
+        return ResponseEntity.ok(matriculaService.listarTodosMatriculaTable());
 
     }
 

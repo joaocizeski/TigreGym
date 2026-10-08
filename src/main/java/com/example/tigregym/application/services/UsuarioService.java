@@ -34,7 +34,8 @@ public class UsuarioService {
     public List<UsuarioResponse> listarTodosUsuarioTable(){
 
         // Busca os usuários que ainda não foram excluídos
-        return usuarioRepository.findAll()
+        return usuarioRepository.findByStatusNot(EnumStatusUsuario.EXCLUIDO)
+                .orElse(List.of())
                 .stream()
                 .map(UsuarioResponse::new)
                 .toList();

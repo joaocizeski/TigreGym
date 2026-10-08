@@ -1,6 +1,8 @@
 package com.example.tigregym.presentation;
 
 import com.example.tigregym.application.DTOs.AtualizarStatusPlanoRequest;
+import com.example.tigregym.application.DTOs.PlanoResponse;
+import com.example.tigregym.application.services.PlanoService;
 import com.example.tigregym.domain.entities.EnumStatusPlano;
 import com.example.tigregym.domain.entities.Plano;
 import com.example.tigregym.domain.repository.PlanoRepository;
@@ -11,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/planos")
 @Tag(name = "Planos",
@@ -20,13 +24,16 @@ public class PlanoController {
     @Autowired
     private PlanoRepository planoRepository;
 
+    @Autowired
+    private PlanoService planoService;
+
     @GetMapping
     @Operation(summary = "Método de consulta da lista de planos!",
             description = "Método responsável por efetuar a consulta de todos os planos sem filtro")
-    public ResponseEntity<?> listarTodos(){
+    public ResponseEntity<List<PlanoResponse>> listarTodos(){
 
         // Busca os planos que ainda não foram excluídos
-        return ResponseEntity.ok(planoRepository.findByStatusNot(EnumStatusPlano.EXCLUIDO));
+        return ResponseEntity.ok(planoService.listarTodosPlanoTable());
 
     }
 

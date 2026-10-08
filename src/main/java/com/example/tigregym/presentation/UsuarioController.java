@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/usuarios")
 @Tag(name = "Usuários",
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     @Autowired
-    private UsuarioResponse usuarioResponse;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -29,7 +31,7 @@ public class UsuarioController {
     @GetMapping
     @Operation(summary = "Método de consulta da lista de usuários!",
             description = "Método responsável por efetuar a consulta de todos os usuários sem filtro")
-    public ResponseEntity<?> listarTodos(){
+    public ResponseEntity<List<UsuarioResponse>> listarTodos(){
 
         // Busca os usuários que ainda não foram excluídos
         return ResponseEntity.ok(usuarioService.listarTodosUsuarioTable());

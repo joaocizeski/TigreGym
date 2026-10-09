@@ -5,8 +5,11 @@
 
 <AnchorPane prefHeight="330.0" prefWidth="389.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.back.MenuController">
    <children>
-      <Button layoutX="33.0" layoutY="43.0" mnemonicParsing="false" onAction="#abrirCadastro" text="Abrir Cadastro" />
+      <Label layoutX="33.0" layoutY="24.0" text="TigreGym - Menu" />
+      <Button layoutX="33.0" layoutY="58.0" mnemonicParsing="false" onAction="#abrirCadastro" prefWidth="150.0" text="Cadastro Usuário" />
+      <Button layoutX="33.0" layoutY="100.0" mnemonicParsing="false" onAction="#abrirCadastroAluno" prefWidth="150.0" text="Cadastro Aluno" />
+      <Button layoutX="33.0" layoutY="142.0" mnemonicParsing="false" onAction="#abrirCadastroPlano" prefWidth="150.0" text="Cadastro Plano" />
+      <Button layoutX="33.0" layoutY="184.0" mnemonicParsing="false" onAction="#abrirCadastroMatricula" prefWidth="150.0" text="Cadastro Matrícula" />
       <Button layoutX="33.0" layoutY="276.0" mnemonicParsing="false" onAction="#sair" text="Sair" />
-      <Button layoutX="33.0" layoutY="87.0" mnemonicParsing="false" text="Button" />
    </children>
 </AnchorPane>

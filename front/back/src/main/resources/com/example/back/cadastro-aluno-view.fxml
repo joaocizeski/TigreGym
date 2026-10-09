@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.back.AlunoController">
+   <children>
+      <Label layoutX="24.0" layoutY="22.0" text="Cadastro de Aluno" />
+
+      <Label layoutX="60.0" layoutY="65.0" text="Nome" />
+      <Label layoutX="60.0" layoutY="106.0" text="CPF" />
+      <Label layoutX="60.0" layoutY="147.0" text="Nascimento" />
+      <Label layoutX="60.0" layoutY="188.0" text="Telefone" />
+      <Label layoutX="60.0" layoutY="229.0" text="Email" />
+
+      <TextField fx:id="txtNome" layoutX="145.0" layoutY="61.0" prefWidth="260.0" />
+      <TextField fx:id="txtCpf" layoutX="145.0" layoutY="102.0" prefWidth="260.0" />
+      <TextField fx:id="txtDataNascimento" layoutX="145.0" layoutY="143.0" prefWidth="260.0" promptText="dd/mm/aaaa" />
+      <TextField fx:id="txtTelefone" layoutX="145.0" layoutY="184.0" prefWidth="260.0" />
+      <TextField fx:id="txtEmail" layoutX="145.0" layoutY="225.0" prefWidth="260.0" />
+
+      <Button layoutX="24.0" layoutY="354.0" mnemonicParsing="false" onAction="#voltar" text="Voltar" />
+      <Button layoutX="501.0" layoutY="354.0" mnemonicParsing="false" onAction="#salvarAluno" text="Salvar" />
+   </children>
+</AnchorPane>

@@ -1,6 +1,8 @@
 package com.example.tigregym.presentation;
 
 import com.example.tigregym.application.DTOs.AtualizarStatusUsuarioRequest;
+import com.example.tigregym.application.DTOs.CriarAdminRequest;
+import com.example.tigregym.application.DTOs.CriarAdminResponse;
 import com.example.tigregym.application.DTOs.UsuarioResponse;
 import com.example.tigregym.application.services.UsuarioService;
 import com.example.tigregym.domain.entities.EnumStatusUsuario;
@@ -38,6 +40,20 @@ public class UsuarioController {
 
     }
 
+    @PostMapping("/admin")
+    public ResponseEntity<CriarAdminResponse> criarAdmin(@RequestBody CriarAdminRequest criarAdminRequest){
+
+        try {
+            CriarAdminResponse respostaSalvar = usuarioService.criarAdmin(criarAdminRequest);
+
+            return ResponseEntity.ok(respostaSalvar);
+        }catch (RuntimeException e){
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
+
     @GetMapping("/{id}")
     @Operation(
             summary = "Método de consulta de usuário por ID!",
@@ -52,6 +68,9 @@ public class UsuarioController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

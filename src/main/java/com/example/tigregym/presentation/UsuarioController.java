@@ -1,9 +1,6 @@
 package com.example.tigregym.presentation;
 
-import com.example.tigregym.application.DTOs.AtualizarStatusUsuarioRequest;
-import com.example.tigregym.application.DTOs.CriarAdminRequest;
-import com.example.tigregym.application.DTOs.CriarAdminResponse;
-import com.example.tigregym.application.DTOs.UsuarioResponse;
+import com.example.tigregym.application.DTOs.*;
 import com.example.tigregym.application.services.UsuarioService;
 import com.example.tigregym.domain.entities.EnumStatusUsuario;
 import com.example.tigregym.domain.entities.Usuario;
@@ -40,6 +37,9 @@ public class UsuarioController {
 
     }
 
+// ----------------------------------------------------------------------------------------------------------
+    //Criar Admin
+
     @PostMapping("/admin")
     public ResponseEntity<CriarAdminResponse> criarAdmin(@RequestBody CriarAdminRequest criarAdminRequest){
 
@@ -53,16 +53,18 @@ public class UsuarioController {
 
     }
 
+// ----------------------------------------------------------------------------------------------------------
+    // Listar Por ID
 
     @GetMapping("/{id}")
     @Operation(
             summary = "Método de consulta de usuário por ID!",
             description = "Método responsável por efetuar a consulta de um usuário através do ID"
     )
-    public ResponseEntity<Usuario> listarPorId(@PathVariable Long id) {
+    public ResponseEntity<?> listarPorId(@PathVariable Long id) {
 
         // Busca o usuário pelo código informado
-        Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
+        Usuario usuarioBanco = usuarioService.buscarPorId(id);
         if (usuarioBanco != null) {
             return ResponseEntity.ok(usuarioBanco);
         }
@@ -70,19 +72,27 @@ public class UsuarioController {
     }
 
     
-
+// ----------------------------------------------------------------------------------------------------------
+    // Criar
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Método de criação de usuário!",
             description = "Método responsável por efetuar a criação de novos usuários!")
-    public ResponseEntity<Usuario> criar(@RequestBody Usuario usuario){
+    public ResponseEntity<?> criar(@RequestBody UsuarioRequest usuario){
 
-        // Salva o novo usuário no banco
-        var usuarioBanco = usuarioRepository.save(usuario);
-        return ResponseEntity.ok(usuarioBanco);
+        try {
+            // Salva o novo usuário no banco
+            UsuarioService usuarioBanco = usuarioService.salvarUsuario(usuario);
+            return ResponseEntity.ok(usuarioBanco);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
 
     }
+
+// ----------------------------------------------------------------------------------------------------------
+    // AtualizarStatus
 
     @PatchMapping("/{id}/status")
     @Operation(
@@ -90,6 +100,7 @@ public class UsuarioController {
             description = "Método responsável por alterar o status de um usuário através do ID"
     )
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestBody AtualizarStatusUsuarioRequest statusRequest){
+
 
         // Busca o usuário que terá o status alterado
         Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
@@ -102,6 +113,9 @@ public class UsuarioController {
 
         return  ResponseEntity.notFound().build();
     }
+
+// ----------------------------------------------------------------------------------------------------------
+    // Atualizar
 
     @PutMapping("/{id}")
     @Operation(
@@ -129,6 +143,9 @@ public class UsuarioController {
         }
 
     }
+
+// ----------------------------------------------------------------------------------------------------------
+    // Excluir
 
     @DeleteMapping("/{id}/excluir")
     @Operation(

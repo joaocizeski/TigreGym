@@ -1,6 +1,9 @@
 package com.example.tigregym.domain.entities;
 
-
+import com.example.tigregym.domain.valueobject.CPF;
+import com.example.tigregym.domain.valueobject.Email;
+import com.example.tigregym.domain.valueobject.Telefone;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,14 +26,16 @@ public class Aluno {
 
     public String nome;
 
-    public String cpf;
+    @Embedded
+    public CPF cpf;
 
     public LocalDate dataNascimento;
 
-    public String telefone;
+    @Embedded
+    public Telefone telefone;
 
-    public String email;
+    @Embedded
+    public Email email;
 
     public EnumStatusAluno status = EnumStatusAluno.ATIVO;
-
 }

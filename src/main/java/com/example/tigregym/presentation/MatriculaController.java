@@ -1,11 +1,10 @@
 package com.example.tigregym.presentation;
 
 import com.example.tigregym.application.DTOs.AtualizarStatusMatriculaRequest;
+import com.example.tigregym.application.DTOs.MatriculaRequest;
 import com.example.tigregym.application.DTOs.MatriculaResponse;
 import com.example.tigregym.application.services.MatriculaService;
 import com.example.tigregym.domain.entities.EnumStatusMatricula;
-import com.example.tigregym.domain.entities.Matricula;
-import com.example.tigregym.domain.repository.MatriculaRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,31 +21,26 @@ import java.util.List;
 public class MatriculaController {
 
     @Autowired
-    private MatriculaRepository matriculaRepository;
-
-    @Autowired
     private MatriculaService matriculaService;
 
     @GetMapping
     @Operation(summary = "Método de consulta da lista de matrículas!",
             description = "Método responsável por efetuar a consulta de todas as matrículas sem filtro")
-    public ResponseEntity<List<MatriculaResponse>> listarTodos(){
-
-        // Busca as matrículas que ainda não foram excluídas
+    public ResponseEntity<List<MatriculaResponse>> listarTodos() {
         return ResponseEntity.ok(matriculaService.listarTodosMatriculaTable());
-
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Método de criação de matrícula!",
             description = "Método responsável por efetuar a criação de novas matrículas!")
-    public ResponseEntity<Matricula> criar(@RequestBody Matricula matricula){
-
-        // Salva a nova matrícula no banco
-        var matriculaBanco = matriculaRepository.save(matricula);
-        return ResponseEntity.ok(matriculaBanco);
-
+    public ResponseEntity<?> criar(@RequestBody MatriculaRequest matricula) {
+        try {
+            MatriculaResponse matriculaBanco = matriculaService.salvarMatricula(matricula, 0L);
+            return ResponseEntity.ok(matriculaBanco);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
@@ -54,11 +48,9 @@ public class MatriculaController {
             summary = "Método de consulta de matrícula por ID!",
             description = "Método responsável por efetuar a consulta de uma matrícula através do ID"
     )
-    public ResponseEntity<Matricula> listarPorId(@PathVariable Long id) {
+    public ResponseEntity<MatriculaResponse> listarPorId(@PathVariable Long id) {
 
-        // Busca a matrícula pelo código informado
-        Matricula matriculaBanco =
-                matriculaRepository.findById(id).orElse(null);
+        MatriculaResponse matriculaBanco = matriculaService.buscarPorId(id);
 
         if (matriculaBanco != null) {
             return ResponseEntity.ok(matriculaBanco);
@@ -76,17 +68,9 @@ public class MatriculaController {
             @PathVariable Long id,
             @RequestBody AtualizarStatusMatriculaRequest statusRequest) {
 
-        // Busca a matrícula que terá o status alterado
-        Matricula matriculaBanco =
-                matriculaRepository.findById(id).orElse(null);
+        boolean atualizado = matriculaService.atualizarStatus(statusRequest.status(), id);
 
-        if (matriculaBanco != null) {
-
-            // Altera o status da matrícula
-            matriculaBanco.setStatus(statusRequest.status());
-
-            matriculaRepository.save(matriculaBanco);
-
+        if (atualizado) {
             return ResponseEntity.ok().build();
         }
 
@@ -98,29 +82,20 @@ public class MatriculaController {
             summary = "Método de atualização de matrícula!",
             description = "Método responsável por atualizar os dados de uma matrícula através do ID"
     )
-    public ResponseEntity<Matricula> atualizar(
+    public ResponseEntity<?> atualizar(
             @PathVariable Long id,
-            @RequestBody Matricula matricula) {
+            @RequestBody MatriculaRequest matricula) {
+        try {
+            MatriculaResponse matriculaBanco = matriculaService.salvarMatricula(matricula, id);
 
-        // Busca a matrícula antes de atualizar os dados
-        Matricula matriculaBanco =
-                matriculaRepository.findById(id).orElse(null);
-
-        if (matriculaBanco != null) {
-
-            // Atualiza os dados da matrícula
-            matriculaBanco.setAluno(matricula.getAluno());
-            matriculaBanco.setPlano(matricula.getPlano());
-            matriculaBanco.setDataInicio(matricula.getDataInicio());
-            matriculaBanco.setDataVencimento(matricula.getDataVencimento());
-            matriculaBanco.setStatus(matricula.getStatus());
-
-            matriculaRepository.save(matriculaBanco);
+            if (matriculaBanco == null) {
+                return ResponseEntity.notFound().build();
+            }
 
             return ResponseEntity.ok(matriculaBanco);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}/excluir")
@@ -130,21 +105,12 @@ public class MatriculaController {
     )
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
 
-        // Busca a matrícula que será marcada como excluída
-        Matricula matriculaBanco =
-                matriculaRepository.findById(id).orElse(null);
+        boolean atualizado = matriculaService.atualizarStatus(EnumStatusMatricula.EXCLUIDO, id);
 
-        if (matriculaBanco != null) {
-
-            // Faz a exclusão lógica da matrícula
-            matriculaBanco.setStatus(EnumStatusMatricula.EXCLUIDO);
-
-            matriculaRepository.save(matriculaBanco);
-
+        if (atualizado) {
             return ResponseEntity.ok().build();
         }
 
         return ResponseEntity.notFound().build();
     }
-
 }

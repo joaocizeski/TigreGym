@@ -25,9 +25,16 @@ public class Plano {
 
     public String valor;
 
-    // Usa uma nova coluna numérica para não conflitar com a coluna antiga de data
     @Column(name = "duracao_meses")
     public Integer duracaoEmMeses;
 
     public EnumStatusPlano status = EnumStatusPlano.ATIVO;
+
+    public void setDuracaoEmMeses(Integer duracaoEmMeses) {
+        if (duracaoEmMeses == null || duracaoEmMeses < 1) {
+            throw new IllegalArgumentException("A duração do plano deve ser maior que zero!");
+        }
+
+        this.duracaoEmMeses = duracaoEmMeses;
+    }
 }

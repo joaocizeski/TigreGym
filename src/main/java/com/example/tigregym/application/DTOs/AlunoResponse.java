@@ -11,10 +11,10 @@ public record AlunoResponse(Long id, String nome, String cpf, LocalDate dataNasc
         this(
                 alunoEntidade.getId(),
                 alunoEntidade.getNome(),
-                alunoEntidade.getCpf(),
+                alunoEntidade.getCpf().toString(),
                 alunoEntidade.getDataNascimento(),
-                alunoEntidade.getTelefone(),
-                alunoEntidade.getEmail(),
+                alunoEntidade.getTelefone().toString(),
+                alunoEntidade.getEmail().toString(),
                 alunoEntidade.getStatus()
         );
     }

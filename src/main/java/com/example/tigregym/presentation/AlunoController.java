@@ -1,11 +1,10 @@
 package com.example.tigregym.presentation;
 
-import com.example.tigregym.application.DTOs.AtualizarStatusAlunoRequest;
+import com.example.tigregym.application.DTOs.AlunoRequest;
 import com.example.tigregym.application.DTOs.AlunoResponse;
+import com.example.tigregym.application.DTOs.AtualizarStatusAlunoRequest;
 import com.example.tigregym.application.services.AlunoService;
-import com.example.tigregym.domain.entities.Aluno;
 import com.example.tigregym.domain.entities.EnumStatusAluno;
-import com.example.tigregym.domain.repository.AlunoRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,32 +21,26 @@ import java.util.List;
 public class AlunoController {
 
     @Autowired
-    private AlunoRepository alunoRepository;
-
-    @Autowired
     private AlunoService alunoService;
 
     @GetMapping
     @Operation(summary = "Método de consulta da lista de alunos!",
             description = "Método responsável por efetuar a consulta de todos os alunos sem filtro")
-    public ResponseEntity<List<AlunoResponse>> listarTodos(){
-
-        // Busca os alunos que ainda não foram excluídos
+    public ResponseEntity<List<AlunoResponse>> listarTodos() {
         return ResponseEntity.ok(alunoService.listarTodosAlunoTable());
-
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Método de criação de aluno!",
             description = "Método responsável por efetuar a criação de novos alunos!")
-    public ResponseEntity<Aluno> criar(@RequestBody Aluno aluno){
-
-        // Salva o novo aluno no banco
-        var alunoBanco = alunoRepository.save(aluno);
-
-        return ResponseEntity.ok(alunoBanco);
-
+    public ResponseEntity<?> criar(@RequestBody AlunoRequest aluno) {
+        try {
+            AlunoResponse alunoBanco = alunoService.salvarAluno(aluno, 0L);
+            return ResponseEntity.ok(alunoBanco);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
@@ -55,10 +48,9 @@ public class AlunoController {
             summary = "Método de consulta de aluno por ID!",
             description = "Método responsável por efetuar a consulta de um aluno através do ID"
     )
-    public ResponseEntity<Aluno> listarPorId(@PathVariable Long id) {
+    public ResponseEntity<AlunoResponse> listarPorId(@PathVariable Long id) {
 
-        // Busca o aluno pelo código informado
-        Aluno alunoBanco = alunoRepository.findById(id).orElse(null);
+        AlunoResponse alunoBanco = alunoService.buscarPorId(id);
 
         if (alunoBanco != null) {
             return ResponseEntity.ok(alunoBanco);
@@ -76,16 +68,9 @@ public class AlunoController {
             @PathVariable Long id,
             @RequestBody AtualizarStatusAlunoRequest statusRequest) {
 
-        // Busca o aluno que terá o status alterado
-        Aluno alunoBanco = alunoRepository.findById(id).orElse(null);
+        boolean atualizado = alunoService.atualizarStatus(statusRequest.status(), id);
 
-        if (alunoBanco != null) {
-
-            // Altera o status do aluno
-            alunoBanco.setStatus(statusRequest.status());
-
-            alunoRepository.save(alunoBanco);
-
+        if (atualizado) {
             return ResponseEntity.ok().build();
         }
 
@@ -97,29 +82,20 @@ public class AlunoController {
             summary = "Método de atualização de aluno!",
             description = "Método responsável por atualizar os dados de um aluno através do ID"
     )
-    public ResponseEntity<Aluno> atualizar(
+    public ResponseEntity<?> atualizar(
             @PathVariable Long id,
-            @RequestBody Aluno aluno) {
+            @RequestBody AlunoRequest aluno) {
+        try {
+            AlunoResponse alunoBanco = alunoService.salvarAluno(aluno, id);
 
-        // Busca o aluno antes de atualizar os dados
-        Aluno alunoBanco = alunoRepository.findById(id).orElse(null);
-
-        if (alunoBanco != null) {
-
-            // Atualiza os dados do aluno
-            alunoBanco.setNome(aluno.getNome());
-            alunoBanco.setCpf(aluno.getCpf());
-            alunoBanco.setDataNascimento(aluno.getDataNascimento());
-            alunoBanco.setTelefone(aluno.getTelefone());
-            alunoBanco.setEmail(aluno.getEmail());
-            alunoBanco.setStatus(aluno.getStatus());
-
-            alunoRepository.save(alunoBanco);
+            if (alunoBanco == null) {
+                return ResponseEntity.notFound().build();
+            }
 
             return ResponseEntity.ok(alunoBanco);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}/excluir")
@@ -129,20 +105,12 @@ public class AlunoController {
     )
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
 
-        // Busca o aluno que será marcado como excluído
-        Aluno alunoBanco = alunoRepository.findById(id).orElse(null);
+        boolean atualizado = alunoService.atualizarStatus(EnumStatusAluno.EXCLUIDO, id);
 
-        if (alunoBanco != null) {
-
-            // Faz a exclusão lógica do aluno
-            alunoBanco.setStatus(EnumStatusAluno.EXCLUIDO);
-
-            alunoRepository.save(alunoBanco);
-
+        if (atualizado) {
             return ResponseEntity.ok().build();
         }
 
         return ResponseEntity.notFound().build();
     }
-
 }

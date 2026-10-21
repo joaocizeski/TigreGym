@@ -1,11 +1,10 @@
 package com.example.tigregym.presentation;
 
 import com.example.tigregym.application.DTOs.AtualizarStatusPlanoRequest;
+import com.example.tigregym.application.DTOs.PlanoRequest;
 import com.example.tigregym.application.DTOs.PlanoResponse;
 import com.example.tigregym.application.services.PlanoService;
 import com.example.tigregym.domain.entities.EnumStatusPlano;
-import com.example.tigregym.domain.entities.Plano;
-import com.example.tigregym.domain.repository.PlanoRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,36 +21,26 @@ import java.util.List;
 public class PlanoController {
 
     @Autowired
-    private PlanoRepository planoRepository;
-
-    @Autowired
     private PlanoService planoService;
 
     @GetMapping
     @Operation(summary = "Método de consulta da lista de planos!",
             description = "Método responsável por efetuar a consulta de todos os planos sem filtro")
-    public ResponseEntity<List<PlanoResponse>> listarTodos(){
-
-        // Busca os planos que ainda não foram excluídos
+    public ResponseEntity<List<PlanoResponse>> listarTodos() {
         return ResponseEntity.ok(planoService.listarTodosPlanoTable());
-
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Método de criação de plano!",
             description = "Método responsável por efetuar a criação de novos planos!")
-    public ResponseEntity<Plano> criar(@RequestBody Plano plano){
-
-        // Não permite duração vazia, zero ou negativa
-        if (plano.getDuracaoEmMeses() == null || plano.getDuracaoEmMeses() < 1) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> criar(@RequestBody PlanoRequest plano) {
+        try {
+            PlanoResponse planoBanco = planoService.salvarPlano(plano, 0L);
+            return ResponseEntity.ok(planoBanco);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        // Salva o novo plano no banco
-        var planoBanco = planoRepository.save(plano);
-        return ResponseEntity.ok(planoBanco);
-
     }
 
     @GetMapping("/{id}")
@@ -59,10 +48,9 @@ public class PlanoController {
             summary = "Método de consulta de plano por ID!",
             description = "Método responsável por efetuar a consulta de um plano através do ID"
     )
-    public ResponseEntity<Plano> listarPorId(@PathVariable Long id) {
+    public ResponseEntity<PlanoResponse> listarPorId(@PathVariable Long id) {
 
-        // Busca o plano pelo código informado
-        Plano planoBanco = planoRepository.findById(id).orElse(null);
+        PlanoResponse planoBanco = planoService.buscarPorId(id);
 
         if (planoBanco != null) {
             return ResponseEntity.ok(planoBanco);
@@ -80,16 +68,9 @@ public class PlanoController {
             @PathVariable Long id,
             @RequestBody AtualizarStatusPlanoRequest statusRequest) {
 
-        // Busca o plano que terá o status alterado
-        Plano planoBanco = planoRepository.findById(id).orElse(null);
+        boolean atualizado = planoService.atualizarStatus(statusRequest.status(), id);
 
-        if (planoBanco != null) {
-
-            // Altera o status do plano
-            planoBanco.setStatus(statusRequest.status());
-
-            planoRepository.save(planoBanco);
-
+        if (atualizado) {
             return ResponseEntity.ok().build();
         }
 
@@ -101,33 +82,20 @@ public class PlanoController {
             summary = "Método de atualização de plano!",
             description = "Método responsável por atualizar os dados de um plano através do ID"
     )
-    public ResponseEntity<Plano> atualizar(
+    public ResponseEntity<?> atualizar(
             @PathVariable Long id,
-            @RequestBody Plano plano) {
+            @RequestBody PlanoRequest plano) {
+        try {
+            PlanoResponse planoBanco = planoService.salvarPlano(plano, id);
 
-        // Busca o plano antes de atualizar os dados
-        Plano planoBanco = planoRepository.findById(id).orElse(null);
-
-        if (planoBanco != null) {
-
-            // Não permite duração vazia, zero ou negativa
-            if (plano.getDuracaoEmMeses() == null || plano.getDuracaoEmMeses() < 1) {
-                return ResponseEntity.badRequest().build();
+            if (planoBanco == null) {
+                return ResponseEntity.notFound().build();
             }
 
-            // Atualiza os dados do plano
-            planoBanco.setNome(plano.getNome());
-            planoBanco.setDescricao(plano.getDescricao());
-            planoBanco.setValor(plano.getValor());
-            planoBanco.setDuracaoEmMeses(plano.getDuracaoEmMeses());
-            planoBanco.setStatus(plano.getStatus());
-
-            planoRepository.save(planoBanco);
-
             return ResponseEntity.ok(planoBanco);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}/excluir")
@@ -137,20 +105,12 @@ public class PlanoController {
     )
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
 
-        // Busca o plano que será marcado como excluído
-        Plano planoBanco = planoRepository.findById(id).orElse(null);
+        boolean atualizado = planoService.atualizarStatus(EnumStatusPlano.EXCLUIDO, id);
 
-        if (planoBanco != null) {
-
-            // Faz a exclusão lógica do plano
-            planoBanco.setStatus(EnumStatusPlano.EXCLUIDO);
-
-            planoRepository.save(planoBanco);
-
+        if (atualizado) {
             return ResponseEntity.ok().build();
         }
 
         return ResponseEntity.notFound().build();
     }
-
 }

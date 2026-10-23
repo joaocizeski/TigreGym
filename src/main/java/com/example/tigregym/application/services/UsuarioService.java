@@ -8,7 +8,6 @@ import com.example.tigregym.domain.valueobject.CPF;
 import com.example.tigregym.domain.valueobject.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,16 +24,16 @@ public class UsuarioService {
     @Autowired
     private TokenService tokenService;
 
-    public UsuarioLogado getUsuarioLogado(){
-        return (UsuarioLogado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
     public LoginResponse validarUsuarioAutenticadoRetornaToken(LoginRequest request) {
 
         Email email = new Email(request.email());
 
-        if (usuarioRepository.existsUsuarioByEmailAndSenha(email, request.senha())) {
-            var token = tokenService.gerarToken(request.email());
+        Usuario usuario = usuarioRepository
+                .findByEmailAndSenha(email, request.senha())
+                .orElse(null);
+
+        if (usuario != null && usuario.getStatus() == EnumStatusUsuario.ATIVO) {
+            var token = tokenService.gerarToken(usuario);
             return new LoginResponse(token);
         }
 
@@ -63,8 +62,6 @@ public class UsuarioService {
 
     public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) {
 
-        var usuarioLogado = getUsuarioLogado();
-
         if (id == 0L) {
             Usuario usuarioBanco = new Usuario(usuario);
             usuarioRepository.save(usuarioBanco);
@@ -78,7 +75,11 @@ public class UsuarioService {
             usuarioBanco.setCpf(new CPF(usuario.cpf()));
             usuarioBanco.setEmail(new Email(usuario.email()));
             usuarioBanco.setSenha(usuario.senha());
-            usuarioBanco.setEmpresa_id(usuarioLogado.empresa_id());
+
+            // Se não enviar role na edição, mantém a role que já estava salva
+            if (usuario.role() != null && !usuario.role().isBlank()) {
+                usuarioBanco.setRole(usuario.role());
+            }
 
             usuarioRepository.save(usuarioBanco);
 
@@ -111,6 +112,4 @@ public class UsuarioService {
 
         return false;
     }
-
-
 }

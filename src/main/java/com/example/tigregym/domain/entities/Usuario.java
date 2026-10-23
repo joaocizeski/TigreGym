@@ -1,7 +1,6 @@
 package com.example.tigregym.domain.entities;
 
 import com.example.tigregym.application.DTOs.CriarAdminRequest;
-import com.example.tigregym.application.DTOs.UsuarioLogado;
 import com.example.tigregym.application.DTOs.UsuarioRequest;
 import com.example.tigregym.domain.valueobject.CPF;
 import com.example.tigregym.domain.valueobject.Email;
@@ -16,7 +15,6 @@ import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -44,8 +42,6 @@ public class Usuario implements UserDetails {
 
     private String role = "ROLE_USER";
 
-    private Long empresa_id;
-
     private EnumStatusUsuario status = EnumStatusUsuario.ATIVO;
 
     public Usuario(CriarAdminRequest criarAdminRequest) {
@@ -61,7 +57,27 @@ public class Usuario implements UserDetails {
         this.setNome(usuario.nome());
         this.setSenha(usuario.senha());
         this.setEmail(new Email(usuario.email()));
-        this.setRole("ROLE_USER");
+        this.setRole(usuario.role());
+    }
+
+    public void setRole(String role) {
+
+        if (role == null || role.isBlank()) {
+            this.role = "ROLE_USER";
+            return;
+        }
+
+        String roleFormatada = role.toUpperCase();
+
+        if (!roleFormatada.startsWith("ROLE_")) {
+            roleFormatada = "ROLE_" + roleFormatada;
+        }
+
+        if (!List.of("ROLE_ADMIN", "ROLE_FUNCIONARIO", "ROLE_USER").contains(roleFormatada)) {
+            throw new IllegalArgumentException("Role inválida!");
+        }
+
+        this.role = roleFormatada;
     }
 
     @Override
@@ -71,11 +87,11 @@ public class Usuario implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return "";
+        return senha;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return email != null ? email.toString() : "";
     }
 }

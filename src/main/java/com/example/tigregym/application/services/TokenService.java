@@ -4,13 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.tigregym.application.DTOs.LoginRequest;
 import com.example.tigregym.application.DTOs.UsuarioLogado;
+import com.example.tigregym.domain.entities.EnumStatusUsuario;
 import com.example.tigregym.domain.entities.Token;
 import com.example.tigregym.domain.entities.Usuario;
 import com.example.tigregym.domain.repository.TokenRepository;
-import com.example.tigregym.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,12 +16,10 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-
-import static java.util.Arrays.stream;
+import java.util.UUID;
 
 @Service
 public class TokenService {
-
 
     @Value("${spring.secret}")
     private String secret;
@@ -35,60 +31,62 @@ public class TokenService {
     private String emissor;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private TokenRepository tokenRepository;
 
-    public String gerarToken(LoginRequest loginRequestDto) {
+    public String gerarToken(Usuario usuario) {
 
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
-        var usuario = usuarioRepository.findAll()
-                .stream()
-                .filter(u -> u.getEmail().equals(loginRequestDto.email()))
-                .findFirst().orElse(null);
+        LocalDateTime dataExpiracao = LocalDateTime.now().plusMinutes(expiracao);
 
         String token = JWT.create()
                 .withIssuer(emissor)
-                .withSubject(loginRequestDto.email())
-                .withExpiresAt(this.gerarDataExpiracao())
+                .withSubject(usuario.getEmail().toString())
+                .withJWTId(UUID.randomUUID().toString())
+                .withClaim("role", usuario.getRole())
+                .withExpiresAt(converterParaInstant(dataExpiracao))
                 .sign(algorithm);
 
-        tokenRepository.save(new Token(token, usuario));
+        // Salva o mesmo token gerado no banco para validar os próximos acessos
+        tokenRepository.save(new Token(token, usuario, dataExpiracao));
 
         return token;
     }
 
     public UsuarioLogado verificarToken(String token) throws JWTVerificationException {
-        // Usa a mesma chave para conferir se o token é válido
-        Algorithm algorithm =Algorithm.HMAC256(secret);
 
-        // Cria o verificador usando o emissor configurado
-        JWTVerifier verificador = JWT.require(algorithm).withIssuer(emissor).build();
+        Algorithm algorithm = Algorithm.HMAC256(secret);
 
-        verificador.verify(token);
+        JWTVerifier verificador = JWT.require(algorithm)
+                .withIssuer(emissor)
+                .build();
 
-        var tokenBanco = tokenRepository.findTokenByToken(token).orElse(null);
+        // Primeiro valida assinatura e expiração do JWT
+        var tokenDecodificado = verificador.verify(token);
 
-        if(tokenBanco==null){
-            throw  new IllegalArgumentException("Token Invalido!");
+        // Depois confirma se o token existe e continua válido no banco
+        Token tokenBanco = tokenRepository
+                .findFirstByTokenOrderByIdDesc(token)
+                .orElse(null);
+
+        if (tokenBanco == null || !tokenBanco.estaValido()) {
+            throw new IllegalArgumentException("Token inválido!");
         }
 
-        return new UsuarioLogado(tokenBanco.getUsuario());
+        Usuario usuario = tokenBanco.getUsuario();
 
+        if (usuario == null || usuario.getStatus() != EnumStatusUsuario.ATIVO) {
+            throw new IllegalArgumentException("Usuário não está ativo!");
+        }
+
+        if (!tokenDecodificado.getSubject().equals(usuario.getEmail().toString())) {
+            throw new IllegalArgumentException("Token inválido!");
+        }
+
+        return new UsuarioLogado(usuario);
     }
 
-    private Instant gerarDataExpiracao(){
-
-        // Pega a data e hora atual
-        var dataAtual = LocalDateTime.now();
-
-        // Adiciona os minutos de validade do token
-        dataAtual = dataAtual.plusMinutes(expiracao);
-
-        // Converte a data para o formato usado pelo JWT
-        return dataAtual.toInstant(ZoneOffset.of("-03:00"));
+    private Instant converterParaInstant(LocalDateTime dataExpiracao) {
+        return dataExpiracao.toInstant(ZoneOffset.of("-03:00"));
     }
-
 }

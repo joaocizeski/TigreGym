@@ -12,71 +12,72 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Component
 public class JwtFIlter extends OncePerRequestFilter {
 
-    @Autowired // É uma injeção de dependência
+    @Autowired
     private TokenService tokenService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
-        // Pega a rota que está sendo acessada
         String uri = request.getRequestURI();
 
-        // Verifica se a rota está na lista que pode passar sem validar o token
-        if (uri.startsWith("/swagger-ui")
-        || uri.startsWith("/v2/api-docs")
-        || uri.startsWith("/v3/api-docs")
-        || uri.startsWith("/swagger-resources")
-        || uri.startsWith("/webjars")
-        || uri.startsWith("/auth/login")
-        || uri.startsWith("/auth/cadastro")
-        || uri.startsWith("/auth/recuperar-senha")
-        ){
-            filterChain.doFilter(request,response);
+        // Libera o preflight do navegador
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
             return;
         }
 
-        // Pega o token enviado no cabeçalho da requisição
+        // Rotas que não precisam de token
+        if (uri.startsWith("/swagger-ui")
+                || uri.startsWith("/v2/api-docs")
+                || uri.startsWith("/v3/api-docs")
+                || uri.startsWith("/swagger-resources")
+                || uri.startsWith("/webjars")
+                || uri.equals("/auth/login")
+                || ("POST".equalsIgnoreCase(request.getMethod())
+                && uri.equals("/usuarios/admin"))) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")){
-             // Remove o texto Bearer e deixa somente o token
-             String token = authHeader.replace("Bearer ", "");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().println("Token não informado");
+            return;
+        }
 
-             try {
+        String token = authHeader.substring(7);
 
-                 // Confere se o token recebido é válido
-                 var usuarioLogado = tokenService.verificarToken(token);
+        try {
 
-                 var user = new UsernamePasswordAuthenticationToken(
-                         usuarioLogado,
-                         null,
-                         usuarioLogado.authorities()
-                 );
+            // Valida assinatura, expiração e existência do token no banco
+            var usuarioLogado = tokenService.verificarToken(token);
 
-                 SecurityContextHolder.getContext().setAuthentication(user);
+            var autenticacao = new UsernamePasswordAuthenticationToken(
+                    usuarioLogado,
+                    null,
+                    usuarioLogado.authorities()
+            );
 
-             } catch (Exception e) {
+            SecurityContextHolder.getContext().setAuthentication(autenticacao);
 
-                 // Retorna 401 quando o token não é válido
-                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                 response.getWriter().println("Token inválido");
-                 return;
-
-             }
-
-        }else {
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().println("Token inválido");
             return;
         }
 
-        // Continua a requisição depois da validação
-        filterChain.doFilter(request,response);
-
+        filterChain.doFilter(request, response);
     }
 }

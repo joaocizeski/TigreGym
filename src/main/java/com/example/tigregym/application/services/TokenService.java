@@ -5,12 +5,21 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.tigregym.application.DTOs.LoginRequest;
+import com.example.tigregym.application.DTOs.UsuarioLogado;
+import com.example.tigregym.domain.entities.Token;
+import com.example.tigregym.domain.entities.Usuario;
+import com.example.tigregym.domain.repository.TokenRepository;
+import com.example.tigregym.domain.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+
+import static java.util.Arrays.stream;
 
 @Service
 public class TokenService {
@@ -25,41 +34,52 @@ public class TokenService {
     @Value("${spring.emissor}")
     private String emissor;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    public String gerarToken(String subject){
+    @Autowired
+    private TokenRepository tokenRepository;
 
-        try{
+    public String gerarToken(LoginRequest loginRequestDto) {
 
-            // Usa a chave secreta para assinar o token
-            Algorithm algorithm =Algorithm.HMAC256(secret);
+        Algorithm algorithm = Algorithm.HMAC256(secret);
 
-            // Monta o token com emissor, usuário e tempo de expiração
-            String token = JWT.create()
-                    .withIssuer(emissor)
-                    .withSubject(subject)
-                    .withExpiresAt(getDataExpiracao())
-                    .sign(algorithm);
+        var usuario = usuarioRepository.findAll()
+                .stream()
+                .filter(u -> u.getEmail().equals(loginRequestDto.email()))
+                .findFirst().orElse(null);
 
-            return token;
+        String token = JWT.create()
+                .withIssuer(emissor)
+                .withSubject(loginRequestDto.email())
+                .withExpiresAt(this.gerarDataExpiracao())
+                .sign(algorithm);
 
-        }catch (RuntimeException e){
-            throw new RuntimeException(e);
-        }
+        tokenRepository.save(new Token(token, usuario));
 
+        return token;
     }
 
-    public DecodedJWT verificarToken(String token) throws JWTVerificationException {
+    public UsuarioLogado verificarToken(String token) throws JWTVerificationException {
         // Usa a mesma chave para conferir se o token é válido
         Algorithm algorithm =Algorithm.HMAC256(secret);
 
         // Cria o verificador usando o emissor configurado
         JWTVerifier verificador = JWT.require(algorithm).withIssuer(emissor).build();
 
-        return verificador.verify(token);
+        verificador.verify(token);
+
+        var tokenBanco = tokenRepository.findTokenByToken(token).orElse(null);
+
+        if(tokenBanco==null){
+            throw  new IllegalArgumentException("Token Invalido!");
+        }
+
+        return new UsuarioLogado(tokenBanco.getUsuario());
 
     }
 
-    private Instant getDataExpiracao(){
+    private Instant gerarDataExpiracao(){
 
         // Pega a data e hora atual
         var dataAtual = LocalDateTime.now();

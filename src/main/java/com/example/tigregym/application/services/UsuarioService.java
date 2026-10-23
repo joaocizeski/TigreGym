@@ -1,11 +1,6 @@
 package com.example.tigregym.application.services;
 
-import com.example.tigregym.application.DTOs.CriarAdminRequest;
-import com.example.tigregym.application.DTOs.CriarAdminResponse;
-import com.example.tigregym.application.DTOs.LoginRequest;
-import com.example.tigregym.application.DTOs.LoginResponse;
-import com.example.tigregym.application.DTOs.UsuarioRequest;
-import com.example.tigregym.application.DTOs.UsuarioResponse;
+import com.example.tigregym.application.DTOs.*;
 import com.example.tigregym.domain.entities.EnumStatusUsuario;
 import com.example.tigregym.domain.entities.Usuario;
 import com.example.tigregym.domain.repository.UsuarioRepository;
@@ -13,6 +8,7 @@ import com.example.tigregym.domain.valueobject.CPF;
 import com.example.tigregym.domain.valueobject.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +24,10 @@ public class UsuarioService {
 
     @Autowired
     private TokenService tokenService;
+
+    public UsuarioLogado getUsuarioLogado(){
+        return (UsuarioLogado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
     public LoginResponse validarUsuarioAutenticadoRetornaToken(LoginRequest request) {
 
@@ -63,6 +63,8 @@ public class UsuarioService {
 
     public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) {
 
+        var usuarioLogado = getUsuarioLogado();
+
         if (id == 0L) {
             Usuario usuarioBanco = new Usuario(usuario);
             usuarioRepository.save(usuarioBanco);
@@ -76,6 +78,7 @@ public class UsuarioService {
             usuarioBanco.setCpf(new CPF(usuario.cpf()));
             usuarioBanco.setEmail(new Email(usuario.email()));
             usuarioBanco.setSenha(usuario.senha());
+            usuarioBanco.setEmpresa_id(usuarioLogado.empresa_id());
 
             usuarioRepository.save(usuarioBanco);
 
@@ -108,4 +111,6 @@ public class UsuarioService {
 
         return false;
     }
+
+
 }

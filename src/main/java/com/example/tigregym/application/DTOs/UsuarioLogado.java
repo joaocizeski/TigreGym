@@ -10,7 +10,7 @@ public record UsuarioLogado(
         Long id,
         String email,
         CPF cpf,
-        String role,
+        Long empresa_id,
         Collection<? extends GrantedAuthority> authorities
 ) {
 
@@ -19,7 +19,7 @@ public record UsuarioLogado(
                 usuario.getId(),
                 usuario.getEmail().toString(),
                 usuario.getCpf(),
-                usuario.getRole(),
+                usuario.getEmpresa() != null ? usuario.getEmpresa().getId() : null,
                 usuario.getAuthorities()
         );
     }

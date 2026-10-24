@@ -4,11 +4,7 @@ import com.example.tigregym.application.DTOs.CriarAdminRequest;
 import com.example.tigregym.application.DTOs.UsuarioRequest;
 import com.example.tigregym.domain.valueobject.CPF;
 import com.example.tigregym.domain.valueobject.Email;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,6 +37,10 @@ public class Usuario implements UserDetails {
     private String senha;
 
     private String role = "ROLE_USER";
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "empresa_id",referencedColumnName = "id")
+    private Empresa empresa;
 
     private EnumStatusUsuario status = EnumStatusUsuario.ATIVO;
 

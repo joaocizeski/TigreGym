@@ -8,7 +8,9 @@ import com.example.tigregym.domain.valueobject.CPF;
 import com.example.tigregym.domain.valueobject.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -40,9 +42,18 @@ public class UsuarioService {
         return null;
     }
 
-    public List<UsuarioResponse> listarTodosUsuarioTable() {
-        return usuarioRepository.findByStatusNot(EnumStatusUsuario.EXCLUIDO)
-                .orElse(List.of())
+    public List<UsuarioResponse> listarTodosUsuariosTable() {
+
+        var usuarioLogado = getUsuarioLogado();
+
+        if (usuarioLogado.empresa_id() == null) {
+            return usuarioRepository.findAll()
+                    .stream()
+                    .map(UsuarioResponse::new)
+                    .toList();
+        }
+
+        return usuarioRepository.getUsuariosByEmpresa_Id(usuarioLogado.empresa_id())
                 .stream()
                 .map(UsuarioResponse::new)
                 .toList();
@@ -57,8 +68,20 @@ public class UsuarioService {
         Usuario usuarioAdminSalvar = new Usuario(criarAdminRequest);
         usuarioRepository.save(usuarioAdminSalvar);
 
-        return new CriarAdminResponse(usuarioAdminSalvar.getId(), "Usuário Salvo com Sucesso!");
+        return new CriarAdminResponse(
+                usuarioAdminSalvar.getId(),
+                "Usuário Salvo com Sucesso!"
+        );
     }
+
+        public UsuarioLogado getUsuarioLogado() {
+            return (UsuarioLogado) SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+        }
+
+
 
     public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) {
 

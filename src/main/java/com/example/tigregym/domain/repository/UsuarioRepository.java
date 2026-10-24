@@ -22,4 +22,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     boolean existsUsuarioByEmail(Email email);
 
     Optional<Usuario> findByEmailAndCpf(Email email, CPF cpf);
+
+    List<Usuario> getUsuariosByEmpresa_Id(Long empresa);
 }

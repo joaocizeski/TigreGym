@@ -20,8 +20,7 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
 
     public List<AlunoResponse> listarTodosAlunoTable() {
-        return alunoRepository.findByStatusNot(EnumStatusAluno.EXCLUIDO)
-                .orElse(List.of())
+        return alunoRepository.findAll()
                 .stream()
                 .map(AlunoResponse::new)
                 .toList();

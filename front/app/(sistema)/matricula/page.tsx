@@ -159,7 +159,13 @@ export default function Matriculas() {
                   </td>
 
                   <td className="p-5">
-                    <span className="inline-flex px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs font-bold">
+                    <span className={`inline-flex px-3 py-1 rounded-full border text-xs font-bold ${
+                      matricula.status === "ATIVO"
+                        ? "bg-green-500/15 border-green-500/30 text-green-400"
+                        : matricula.status === "BLOQUEADO"
+                          ? "bg-[#F5C518]/15 border-[#F5C518]/30 text-[#F5C518]"
+                          : "bg-red-500/15 border-red-500/30 text-red-400"
+                    }`}>
                       {matricula.status}
                     </span>
                   </td>

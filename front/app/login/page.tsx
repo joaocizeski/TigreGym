@@ -12,9 +12,9 @@ export default function Login() {
     const senhaTela = formData.get("senha")?.toString() ?? "";
 
     try {
-      var loginResposta = await axios.post<LoginResponse>(
+      const loginResposta = await axios.post<LoginResponse>(
         "http://localhost:8080/auth/login",
-        { email: emailTela, senha: senhaTela },
+        { email: emailTela, senha: senhaTela }
       );
 
       if (loginResposta.status == 200) {
@@ -26,46 +26,73 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-2xl p-8 shadow-2xl">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">Entrar no sistema</h1>
+    <main className="min-h-screen bg-[#070707] text-white">
+      <div className="grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
+        <section className="relative hidden overflow-hidden border-r border-zinc-900 lg:flex lg:items-center">
+          <div className="absolute -left-36 -top-36 h-96 w-96 rounded-full border border-[#F5C518]/30" />
+          <div className="absolute -left-16 -top-16 h-96 w-96 rounded-full border border-[#F5C518]/10" />
+          <div className="absolute -bottom-48 right-10 h-[520px] w-[520px] rounded-full border border-[#F5C518]/20" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(245,197,24,0.08),transparent_30%)]" />
 
-          <p className="mt-2 text-sm text-zinc-400">
-            Acesse sua conta para continuar no TigreGym
-          </p>
-        </div>
+          <div className="relative z-10 max-w-xl px-16">
+            <h1 className="text-6xl font-black tracking-tight">
+              Tigre<span className="text-[#F5C518]">Gym</span>
+            </h1>
 
-        <form action={handleLogin} className="space-y-5">
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-zinc-300">E-mail</label>
+            <p className="mt-6 max-w-md text-2xl leading-relaxed text-zinc-300">
+              Gestão completa para sua academia
+            </p>
 
-            <input
-              name="email"
-              placeholder="Digite seu e-mail"
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white placeholder:text-zinc-500 outline-none transition focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20"
-            />
+            <div className="mt-6 h-1 w-12 rounded-full bg-[#F5C518]" />
           </div>
+        </section>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-zinc-300">Senha</label>
+        <section className="flex items-center justify-center px-6 py-12">
+          <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-[#0d1215] p-8 shadow-2xl shadow-black/40">
+            <div className="mb-8">
+              <h2 className="text-3xl font-black">Bem-vindo!</h2>
+              <p className="mt-2 text-sm text-zinc-400">
+                Acesse sua conta para continuar
+              </p>
+            </div>
 
-            <input
-              name="senha"
-              type="password"
-              placeholder="Digite sua senha"
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white placeholder:text-zinc-500 outline-none transition focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20"
-            />
+            <form action={handleLogin} className="space-y-5">
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-zinc-300">
+                  E-mail
+                </label>
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="Digite seu e-mail"
+                  className="w-full rounded-lg border border-zinc-700 bg-[#11181c] px-4 py-3 text-white outline-none transition placeholder:text-zinc-600 focus:border-[#F5C518] focus:ring-2 focus:ring-[#F5C518]/10"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-zinc-300">
+                  Senha
+                </label>
+                <input
+                  name="senha"
+                  type="password"
+                  required
+                  placeholder="Digite sua senha"
+                  className="w-full rounded-lg border border-zinc-700 bg-[#11181c] px-4 py-3 text-white outline-none transition placeholder:text-zinc-600 focus:border-[#F5C518] focus:ring-2 focus:ring-[#F5C518]/10"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full rounded-lg bg-[#F5C518] py-3 font-bold text-black transition hover:bg-[#ffd52c]"
+              >
+                Entrar
+              </button>
+            </form>
           </div>
-
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-yellow-400 py-3 font-semibold text-black transition hover:bg-yellow-300"
-          >
-            Entrar
-          </button>
-        </form>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

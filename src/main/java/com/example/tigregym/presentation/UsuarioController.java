@@ -29,7 +29,7 @@ public class UsuarioController {
     @Operation(summary = "Método de consulta da lista de usuários!",
             description = "Método responsável por efetuar a consulta de todos os usuários sem filtro")
     public ResponseEntity<List<UsuarioResponse>> listarTodos() {
-        return ResponseEntity.ok(usuarioService.listarTodosUsuarioTable());
+        return ResponseEntity.ok(usuarioService.listarTodosUsuariosTable());
     }
 
     @PostMapping("/admin")

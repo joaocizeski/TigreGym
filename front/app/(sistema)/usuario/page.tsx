@@ -73,7 +73,7 @@ export default function Usuarios() {
   };
 
   return (
-    <div className="w-full bg-black px-6 py-8 md:px-10">
+    <div className="w-full bg-[#070707] px-6 py-8 md:px-10">
       <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <p className="text-yellow-400 text-sm font-bold tracking-[3px] mb-2">
@@ -150,7 +150,13 @@ export default function Usuarios() {
                     </td>
 
                     <td className="px-6 py-5 text-sm font-medium">
-                      <span className="inline-flex px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs font-bold">
+                      <span className={`inline-flex px-3 py-1 rounded-full border text-xs font-bold ${
+                        usuario.status === "ATIVO"
+                          ? "bg-green-500/15 border-green-500/30 text-green-400"
+                          : usuario.status === "BLOQUEADO"
+                            ? "bg-[#F5C518]/15 border-[#F5C518]/30 text-[#F5C518]"
+                            : "bg-red-500/15 border-red-500/30 text-red-400"
+                      }`}>
                         {usuario.status}
                       </span>
                     </td>

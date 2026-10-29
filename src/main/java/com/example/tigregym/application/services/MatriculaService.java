@@ -17,8 +17,7 @@ public class MatriculaService {
     private MatriculaRepository matriculaRepository;
 
     public List<MatriculaResponse> listarTodosMatriculaTable() {
-        return matriculaRepository.findByStatusNot(EnumStatusMatricula.EXCLUIDO)
-                .orElse(List.of())
+        return matriculaRepository.findAll()
                 .stream()
                 .map(MatriculaResponse::new)
                 .toList();

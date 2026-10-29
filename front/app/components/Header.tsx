@@ -1,47 +1,25 @@
 export default function Header() {
   return (
-    <>
-      <header className="w-full border-b border-zinc-800 bg-zinc-950 px-6 py-3">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center">
-            <img
-              src="/logo-tigregym-v2.png"
-              alt="Logo TigreGym"
-              className="h-14 w-auto object-contain"
-            />
+    <header className="w-full border-b border-zinc-800 bg-[#090d0f] px-6 py-3">
+      <div className="flex min-h-14 items-center justify-end gap-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-300">
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="8" r="3" />
+              <path d="M5 21c.5-5 2.8-7.5 7-7.5S18.5 16 19 21" />
+            </svg>
           </div>
 
-          <div className="flex items-center gap-5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400 text-black">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
-                >
-                  <path d="M20 21a8 8 0 0 0-16 0" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-
-              <span className="hidden text-sm font-medium text-white sm:block md:text-base">
-                Usuario João Vitor
-              </span>
-            </div>
-
-            <div>
-              <button className="rounded-lg border border-yellow-400 px-4 py-2 text-sm font-semibold text-yellow-400 transition duration-200 hover:bg-yellow-400 hover:text-black">
-                Sair
-              </button>
-            </div>
+          <div className="hidden sm:block">
+            <p className="text-sm font-semibold text-white">Usuário João Vitor</p>
+            <p className="text-xs text-zinc-500">TigreGym</p>
           </div>
         </div>
-      </header>
-    </>
+
+        <button className="rounded-lg border border-[#F5C518] px-4 py-2 text-sm font-semibold text-[#F5C518] transition hover:bg-[#F5C518] hover:text-black">
+          Sair
+        </button>
+      </div>
+    </header>
   );
 }

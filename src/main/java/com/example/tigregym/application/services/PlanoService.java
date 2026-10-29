@@ -17,8 +17,7 @@ public class PlanoService {
     private PlanoRepository planoRepository;
 
     public List<PlanoResponse> listarTodosPlanoTable() {
-        return planoRepository.findByStatusNot(EnumStatusPlano.EXCLUIDO)
-                .orElse(List.of())
+        return planoRepository.findAll()
                 .stream()
                 .map(PlanoResponse::new)
                 .toList();

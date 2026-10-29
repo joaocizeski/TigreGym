@@ -4,8 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -14,20 +17,25 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Matricula {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     public Long id;
 
-    public String aluno;
+    @ManyToOne
+    @JoinColumn(name = "aluno_id", referencedColumnName = "id")
+    public Aluno aluno;
 
-    public String plano;
+    @ManyToOne
+    @JoinColumn(name = "plano_id", referencedColumnName = "id")
+    public Plano plano;
 
     public LocalDateTime dataInicio;
 
     public LocalDateTime dataVencimento;
 
     public EnumStatusMatricula status = EnumStatusMatricula.ATIVO;
-
 }

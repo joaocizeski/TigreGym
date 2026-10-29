@@ -44,8 +44,8 @@ public class MatriculaController {
                 LocalDate.parse(txtDataVencimento.getText(), formatoData).atStartOfDay().toString();
 
         String jsonRequest = String.format("{\n"
-                        + "\"aluno\": \"%s\",\n"
-                        + "\"plano\": \"%s\",\n"
+                        + "\"aluno_id\": %s,\n"
+                        + "\"plano_id\": %s,\n"
                         + "\"dataInicio\": \"%s\",\n"
                         + "\"dataVencimento\": \"%s\"\n"
                         + "}",

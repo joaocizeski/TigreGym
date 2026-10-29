@@ -5,18 +5,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Plano {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     public Long id;
 
     public String nome;
@@ -27,6 +34,9 @@ public class Plano {
 
     @Column(name = "duracao_meses")
     public Integer duracaoEmMeses;
+
+    @OneToMany(mappedBy = "plano")
+    private Set<Matricula> matriculas = new HashSet<>();
 
     public EnumStatusPlano status = EnumStatusPlano.ATIVO;
 

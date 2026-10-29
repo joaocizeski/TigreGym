@@ -37,6 +37,11 @@ public class MatriculaController {
     public ResponseEntity<?> criar(@RequestBody MatriculaRequest matricula) {
         try {
             MatriculaResponse matriculaBanco = matriculaService.salvarMatricula(matricula, 0L);
+
+            if (matriculaBanco == null) {
+                return ResponseEntity.notFound().build();
+            }
+
             return ResponseEntity.ok(matriculaBanco);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

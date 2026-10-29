@@ -2,9 +2,13 @@ package com.example.tigregym.application.services;
 
 import com.example.tigregym.application.DTOs.MatriculaRequest;
 import com.example.tigregym.application.DTOs.MatriculaResponse;
+import com.example.tigregym.domain.entities.Aluno;
 import com.example.tigregym.domain.entities.EnumStatusMatricula;
 import com.example.tigregym.domain.entities.Matricula;
+import com.example.tigregym.domain.entities.Plano;
+import com.example.tigregym.domain.repository.AlunoRepository;
 import com.example.tigregym.domain.repository.MatriculaRepository;
+import com.example.tigregym.domain.repository.PlanoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +20,12 @@ public class MatriculaService {
     @Autowired
     private MatriculaRepository matriculaRepository;
 
+    @Autowired
+    private AlunoRepository alunoRepository;
+
+    @Autowired
+    private PlanoRepository planoRepository;
+
     public List<MatriculaResponse> listarTodosMatriculaTable() {
         return matriculaRepository.findAll()
                 .stream()
@@ -25,10 +35,17 @@ public class MatriculaService {
 
     public MatriculaResponse salvarMatricula(MatriculaRequest matricula, Long id) {
 
+        Aluno alunoBanco = alunoRepository.findById(matricula.aluno_id()).orElse(null);
+        Plano planoBanco = planoRepository.findById(matricula.plano_id()).orElse(null);
+
+        if (alunoBanco == null || planoBanco == null) {
+            return null;
+        }
+
         if (id == 0L) {
             Matricula matriculaBanco = new Matricula();
-            matriculaBanco.setAluno(matricula.aluno());
-            matriculaBanco.setPlano(matricula.plano());
+            matriculaBanco.setAluno(alunoBanco);
+            matriculaBanco.setPlano(planoBanco);
             matriculaBanco.setDataInicio(matricula.dataInicio());
             matriculaBanco.setDataVencimento(matricula.dataVencimento());
 
@@ -40,8 +57,8 @@ public class MatriculaService {
         Matricula matriculaBanco = matriculaRepository.findById(id).orElse(null);
 
         if (matriculaBanco != null) {
-            matriculaBanco.setAluno(matricula.aluno());
-            matriculaBanco.setPlano(matricula.plano());
+            matriculaBanco.setAluno(alunoBanco);
+            matriculaBanco.setPlano(planoBanco);
             matriculaBanco.setDataInicio(matricula.dataInicio());
             matriculaBanco.setDataVencimento(matricula.dataVencimento());
 

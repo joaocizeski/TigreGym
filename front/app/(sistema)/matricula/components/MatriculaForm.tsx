@@ -18,7 +18,8 @@ export default function UsuarioForm({
 
   // Usa os dados existentes quando for edição
   const [matricula, setMatricula] = useState<Matricula>(
-    matriculaExistente || new Matricula(null, "", "", "", "", "ATIVO")
+    matriculaExistente ||
+      new Matricula(null, null, "", null, "", "", "", "ATIVO")
   );
 
   useEffect(() => {
@@ -42,15 +43,17 @@ export default function UsuarioForm({
 
   // Muda somente o campo que foi escolhido ou digitado
   const handlerChange = (
-    campo: "aluno" | "plano" | "dataInicio" | "dataVencimento",
+    campo: "alunoId" | "planoId" | "dataInicio" | "dataVencimento",
     valor: string
   ) => {
     setMatricula(
       (valorAnterior) =>
         new Matricula(
           valorAnterior.id,
-          campo === "aluno" ? valor : valorAnterior.aluno,
-          campo === "plano" ? valor : valorAnterior.plano,
+          campo === "alunoId" ? Number(valor) : valorAnterior.alunoId,
+          valorAnterior.aluno,
+          campo === "planoId" ? Number(valor) : valorAnterior.planoId,
+          valorAnterior.plano,
           campo === "dataInicio" ? valor : valorAnterior.dataInicio,
           campo === "dataVencimento" ? valor : valorAnterior.dataVencimento,
           valorAnterior.status
@@ -59,11 +62,18 @@ export default function UsuarioForm({
   };
 
   const handlerSalvar = async (formData: FormData) => {
+    const dadosMatricula = {
+      aluno_id: matricula.alunoId,
+      plano_id: matricula.planoId,
+      dataInicio: matricula.dataInicio,
+      dataVencimento: matricula.dataVencimento,
+    };
+
     // Se a matrícula já existe, edita ela
     if (matriculaExistente) {
       var dadosRetorno = await axios.put(
         "http://localhost:8080/matriculas/" + matricula.id,
-        matricula
+        dadosMatricula
       );
 
       if (dadosRetorno.status == 200) {
@@ -76,7 +86,7 @@ export default function UsuarioForm({
       // Se não existe, cria uma nova
       var dadosRetorno = await axios.post(
         "http://localhost:8080/matriculas",
-        matricula
+        dadosMatricula
       );
 
       if (dadosRetorno.status == 200) {
@@ -115,15 +125,15 @@ export default function UsuarioForm({
 
             <select
               name="aluno"
-              value={matricula.aluno}
+              value={matricula.alunoId ?? ""}
               required
-              onChange={(e) => handlerChange("aluno", e.target.value)}
+              onChange={(e) => handlerChange("alunoId", e.target.value)}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-white outline-none focus:border-yellow-400 transition"
             >
               <option value="">Selecione um aluno</option>
 
               {alunos.map((aluno) => (
-                <option key={aluno.id} value={aluno.nome}>
+                <option key={aluno.id} value={aluno.id ?? ""}>
                   {aluno.nome}
                 </option>
               ))}
@@ -137,15 +147,15 @@ export default function UsuarioForm({
 
             <select
               name="plano"
-              value={matricula.plano}
+              value={matricula.planoId ?? ""}
               required
-              onChange={(e) => handlerChange("plano", e.target.value)}
+              onChange={(e) => handlerChange("planoId", e.target.value)}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-white outline-none focus:border-yellow-400 transition"
             >
               <option value="">Selecione um plano</option>
 
               {planos.map((plano) => (
-                <option key={plano.id} value={plano.nome}>
+                <option key={plano.id} value={plano.id ?? ""}>
                   {plano.nome}
                   {plano.duracaoEmMeses
                     ? ` - ${plano.duracaoEmMeses} ${

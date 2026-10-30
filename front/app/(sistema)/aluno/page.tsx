@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import { atualizarStatusAluno, buscarListaAlunos, deletarAluno } from "@/app/services/alunoService";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Aluno } from "../../types/aluno";
@@ -17,11 +17,10 @@ export default function Alunos() {
   // Busca no backend a lista de alunos
   const carregarDados = async () => {
     try {
-      // Faz uma requisição GET para o backend
-      const dados = await axios.get<Aluno[]>("http://localhost:8080/alunos");
+      const dados = await buscarListaAlunos();
 
       // Guarda os alunos recebidos para atualizar a tela
-      setAlunos(dados.data);
+      setAlunos(dados);
     } catch (error) {
       console.log(error);
       alert("Erro ao carregar dados!");
@@ -30,14 +29,12 @@ export default function Alunos() {
 
   // Faz a exclusão sem apagar o aluno do banco
   const handleDeletarAluno = async (aluno: Aluno) => {
-    var dadosRetorno = await axios.delete(
-      "http://localhost:8080/alunos/" + aluno.id + "/excluir"
-    );
+    var dadosRetorno = await deletarAluno(aluno.id || 0);
 
-    if (dadosRetorno.status == 200) {
+    if (dadosRetorno == 200) {
       alert("Excluído com sucesso!");
     } else {
-      alert(dadosRetorno.data);
+      alert("Erro ao excluir aluno!");
       return;
     }
 
@@ -46,25 +43,7 @@ export default function Alunos() {
 
   // Troca o status entre ATIVO e BLOQUEADO
   const handleAlterarStatusAluno = async (aluno: Aluno) => {
-    var novoStatus = {};
-
-    if (aluno.status === "ATIVO") {
-      novoStatus = { status: "BLOQUEADO" };
-    } else {
-      novoStatus = { status: "ATIVO" };
-    }
-
-    var dadosRetorno = await axios.patch(
-      "http://localhost:8080/alunos/" + aluno.id + "/status",
-      novoStatus
-    );
-
-    if (dadosRetorno.status == 200) {
-      alert("Status atualizado com sucesso!");
-    } else {
-      alert(dadosRetorno.data);
-      return;
-    }
+    await atualizarStatusAluno(aluno);
 
     carregarDados();
   };

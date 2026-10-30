@@ -5,7 +5,7 @@ import UsuarioForm from "../../components/MatriculaForm";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Matricula } from "../../../../types/matricula";
-import axios from "axios";
+import { consultaMatriculaPorId } from "@/app/services/matriculaService";
 
 export default function EditarMatricula() {
   const parametro = useParams();
@@ -22,12 +22,10 @@ export default function EditarMatricula() {
 
   // Busca a matrícula pelo código
   const buscarDados = async () => {
-    const valorMatriculaBack = await axios.get<Matricula>(
-      "http://localhost:8080/matriculas/" + codigo
-    );
+    const valorMatriculaBack = await consultaMatriculaPorId(codigo);
 
-    if (valorMatriculaBack.status == 200) {
-      setMatricula(valorMatriculaBack.data);
+    if (valorMatriculaBack) {
+      setMatricula(valorMatriculaBack);
     } else {
       router.push("/matricula");
     }

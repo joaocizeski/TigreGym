@@ -5,7 +5,7 @@ import UsuarioForm from "../../components/PlanoForm";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Plano } from "../../../../types/plano";
-import axios from "axios";
+import { consultaPlanoPorId } from "@/app/services/planoService";
 
 export default function EditarPlano() {
   const parametro = useParams();
@@ -22,12 +22,10 @@ export default function EditarPlano() {
 
   // Busca o plano pelo código
   const buscarDados = async () => {
-    const valorPlanoBack = await axios.get<Plano>(
-      "http://localhost:8080/planos/" + codigo
-    );
+    const valorPlanoBack = await consultaPlanoPorId(codigo);
 
-    if (valorPlanoBack.status == 200) {
-      setPlano(valorPlanoBack.data);
+    if (valorPlanoBack) {
+      setPlano(valorPlanoBack);
     } else {
       router.push("/plano");
     }

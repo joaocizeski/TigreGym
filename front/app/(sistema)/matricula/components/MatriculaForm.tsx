@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import { Matricula, MatriculaFormProps } from "../../../types/matricula";
 import { Aluno } from "../../../types/aluno";
 import { Plano } from "../../../types/plano";
-import axios from "axios";
+import { buscarListaAlunos } from "@/app/services/alunoService";
+import { buscarListaPlanos } from "@/app/services/planoService";
+import { atualizarMatricula, salvarMatricula } from "@/app/services/matriculaService";
 import { useRouter } from "next/navigation";
 
 export default function UsuarioForm({
@@ -30,12 +32,12 @@ export default function UsuarioForm({
   const carregarOpcoes = async () => {
     try {
       const [dadosAlunos, dadosPlanos] = await Promise.all([
-        axios.get<Aluno[]>("http://localhost:8080/alunos"),
-        axios.get<Plano[]>("http://localhost:8080/planos"),
+        buscarListaAlunos(),
+        buscarListaPlanos(),
       ]);
 
-      setAlunos(dadosAlunos.data);
-      setPlanos(dadosPlanos.data);
+      setAlunos(dadosAlunos);
+      setPlanos(dadosPlanos);
     } catch (error) {
       alert("Erro ao carregar alunos e planos!");
     }
@@ -62,37 +64,24 @@ export default function UsuarioForm({
   };
 
   const handlerSalvar = async (formData: FormData) => {
-    const dadosMatricula = {
-      aluno_id: matricula.alunoId,
-      plano_id: matricula.planoId,
-      dataInicio: matricula.dataInicio,
-      dataVencimento: matricula.dataVencimento,
-    };
-
     // Se a matrícula já existe, edita ela
     if (matriculaExistente) {
-      var dadosRetorno = await axios.put(
-        "http://localhost:8080/matriculas/" + matricula.id,
-        dadosMatricula
-      );
+      var dadosRetorno = await atualizarMatricula(matricula);
 
-      if (dadosRetorno.status == 200) {
+      if (dadosRetorno) {
         alert("Matrícula foi salva com sucesso!");
       } else {
-        alert(dadosRetorno.data);
+        alert("Erro ao atualizar matrícula!");
         return;
       }
     } else {
       // Se não existe, cria uma nova
-      var dadosRetorno = await axios.post(
-        "http://localhost:8080/matriculas",
-        dadosMatricula
-      );
+      var dadosRetorno = await salvarMatricula(matricula);
 
-      if (dadosRetorno.status == 200) {
+      if (dadosRetorno) {
         alert("Matrícula foi salva com sucesso!");
       } else {
-        alert(dadosRetorno.data);
+        alert("Erro ao salvar matrícula!");
         return;
       }
     }

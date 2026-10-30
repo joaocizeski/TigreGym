@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "@/node_modules/axios/index";
+import { atualizarStatusMatricula, buscarListaMatriculas, deletarMatricula } from "@/app/services/matriculaService";
 import Link from "@/node_modules/next/link";
 import { useEffect, useState } from "react";
 import { Matricula } from "../../types/matricula";
@@ -17,13 +17,10 @@ export default function Matriculas() {
   // Busca no backend a lista de matrículas
   const carregarDados = async () => {
     try {
-      // Faz uma requisição GET para o backend
-      const dados = await axios.get<Matricula[]>(
-        "http://localhost:8080/matriculas"
-      );
+      const dados = await buscarListaMatriculas();
 
-      // Guarda os matrículas recebidos para atualizar a tela
-      setMatriculas(dados.data);
+      // Guarda as matrículas recebidas para atualizar a tela
+      setMatriculas(dados);
     } catch (error) {
       alert("Erro ao carregar dados!");
     }
@@ -31,14 +28,12 @@ export default function Matriculas() {
 
   // Faz a exclusão sem apagar a matrícula do banco
   const handleDeletarMatricula = async (matricula: Matricula) => {
-    var dadosRetorno = await axios.delete(
-      "http://localhost:8080/matriculas/" + matricula.id + "/excluir"
-    );
+    var dadosRetorno = await deletarMatricula(matricula.id || 0);
 
-    if (dadosRetorno.status == 200) {
+    if (dadosRetorno == 200) {
       alert("Excluído com sucesso!");
     } else {
-      alert(dadosRetorno.data);
+      alert("Erro ao excluir matrícula!");
       return;
     }
 
@@ -47,25 +42,7 @@ export default function Matriculas() {
 
   // Troca o status entre ATIVO e BLOQUEADO
   const handleAlterarStatusMatricula = async (matricula: Matricula) => {
-    var novoStatus = {};
-
-    if (matricula.status === "ATIVO") {
-      novoStatus = { status: "BLOQUEADO" };
-    } else {
-      novoStatus = { status: "ATIVO" };
-    }
-
-    var dadosRetorno = await axios.patch(
-      "http://localhost:8080/matriculas/" + matricula.id + "/status",
-      novoStatus
-    );
-
-    if (dadosRetorno.status == 200) {
-      alert("Status atualizado com sucesso!");
-    } else {
-      alert(dadosRetorno.data);
-      return;
-    }
+    await atualizarStatusMatricula(matricula);
 
     carregarDados();
   };

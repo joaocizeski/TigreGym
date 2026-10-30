@@ -1,6 +1,9 @@
 "use client";
 
-import axios from "axios";
+import { buscarListaAlunos } from "@/app/services/alunoService";
+import { buscarListaMatriculas } from "@/app/services/matriculaService";
+import { buscarListaPlanos } from "@/app/services/planoService";
+import { buscarListaUsuarios } from "@/app/services/usuarioService";
 import { useEffect, useMemo, useState } from "react";
 
 type ItemStatus = {
@@ -55,16 +58,16 @@ export default function Home() {
 
   const carregarDados = async () => {
     const resultados = await Promise.allSettled([
-      axios.get<ItemStatus[]>("http://localhost:8080/alunos"),
-      axios.get<MatriculaDashboard[]>("http://localhost:8080/matriculas"),
-      axios.get<ItemStatus[]>("http://localhost:8080/planos"),
-      axios.get<ItemStatus[]>("http://localhost:8080/usuarios"),
+      buscarListaAlunos(),
+      buscarListaMatriculas(),
+      buscarListaPlanos(),
+      buscarListaUsuarios(),
     ]);
 
-    if (resultados[0].status === "fulfilled") setAlunos(resultados[0].value.data);
-    if (resultados[1].status === "fulfilled") setMatriculas(resultados[1].value.data);
-    if (resultados[2].status === "fulfilled") setPlanos(resultados[2].value.data);
-    if (resultados[3].status === "fulfilled") setUsuarios(resultados[3].value.data);
+    if (resultados[0].status === "fulfilled") setAlunos(resultados[0].value);
+    if (resultados[1].status === "fulfilled") setMatriculas(resultados[1].value);
+    if (resultados[2].status === "fulfilled") setPlanos(resultados[2].value);
+    if (resultados[3].status === "fulfilled") setUsuarios(resultados[3].value);
   };
 
   const historicoMatriculas = useMemo(() => {

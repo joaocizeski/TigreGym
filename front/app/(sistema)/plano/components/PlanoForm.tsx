@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Plano, PlanoFormProps } from "../../../types/plano";
-import axios from "axios";
+import { atualizarPlano, salvarPlano } from "@/app/services/planoService";
 import { useRouter } from "next/navigation";
 
 export default function UsuarioForm({ planoExistente }: PlanoFormProps) {
@@ -37,28 +37,22 @@ export default function UsuarioForm({ planoExistente }: PlanoFormProps) {
   const handlerSalvar = async (formData: FormData) => {
     // Se o plano já existe, edita ele
     if (planoExistente) {
-      var dadosRetorno = await axios.put(
-        "http://localhost:8080/planos/" + plano.id,
-        plano
-      );
+      var dadosRetorno = await atualizarPlano(plano);
 
-      if (dadosRetorno.status == 200) {
+      if (dadosRetorno) {
         alert("Plano foi salvo com sucesso!");
       } else {
-        alert(dadosRetorno.data);
+        alert("Erro ao atualizar plano!");
         return;
       }
     } else {
       // Se não existe, cria um novo
-      var dadosRetorno = await axios.post(
-        "http://localhost:8080/planos",
-        plano
-      );
+      var dadosRetorno = await salvarPlano(plano);
 
-      if (dadosRetorno.status == 200) {
+      if (dadosRetorno) {
         alert("Plano foi salvo com sucesso!");
       } else {
-        alert(dadosRetorno.data);
+        alert("Erro ao salvar plano!");
         return;
       }
     }

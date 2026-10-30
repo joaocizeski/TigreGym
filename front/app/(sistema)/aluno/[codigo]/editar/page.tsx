@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import AlunoForm from "../../components/AlunoForm";
 import { useEffect, useState } from "react";
 import { Aluno } from "../../../../types/aluno";
-import axios from "axios";
+import { consultaAlunoPorId } from "@/app/services/alunoService";
 
 export default function EditarAluno() {
   const parametro = useParams();
@@ -22,12 +22,10 @@ export default function EditarAluno() {
 
   // Busca o aluno pelo código
   const buscarDados = async () => {
-    const valorAlunoBack = await axios.get<Aluno>(
-      "http://localhost:8080/alunos/" + codigo
-    );
+    const valorAlunoBack = await consultaAlunoPorId(codigo);
 
-    if (valorAlunoBack.status == 200) {
-      setAluno(valorAlunoBack.data);
+    if (valorAlunoBack) {
+      setAluno(valorAlunoBack);
     } else {
       router.push("/aluno");
     }

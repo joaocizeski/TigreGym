@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "@/node_modules/axios/index";
+import { atualizarStatusPlano, buscarListaPlanos, deletarPlano } from "@/app/services/planoService";
 import Link from "@/node_modules/next/link";
 import { useEffect, useState } from "react";
 import { Plano } from "../../types/plano";
@@ -17,11 +17,10 @@ export default function Planos() {
   // Busca no backend a lista de planos
   const carregarDados = async () => {
     try {
-      // Faz uma requisição GET para o backend
-      const dados = await axios.get<Plano[]>("http://localhost:8080/planos");
+      const dados = await buscarListaPlanos();
 
       // Guarda os planos recebidos para atualizar a tela
-      setPlanos(dados.data);
+      setPlanos(dados);
     } catch (error) {
       alert("Erro ao carregar dados!");
     }
@@ -29,14 +28,12 @@ export default function Planos() {
 
   // Faz a exclusão sem apagar o plano do banco
   const handleDeletarPlano = async (plano: Plano) => {
-    var dadosRetorno = await axios.delete(
-      "http://localhost:8080/planos/" + plano.id + "/excluir"
-    );
+    var dadosRetorno = await deletarPlano(plano.id || 0);
 
-    if (dadosRetorno.status == 200) {
+    if (dadosRetorno == 200) {
       alert("Excluído com sucesso!");
     } else {
-      alert(dadosRetorno.data);
+      alert("Erro ao excluir plano!");
       return;
     }
 
@@ -45,25 +42,7 @@ export default function Planos() {
 
   // Troca o status entre ATIVO e BLOQUEADO
   const handleAlterarStatusPlano = async (plano: Plano) => {
-    var novoStatus = {};
-
-    if (plano.status === "ATIVO") {
-      novoStatus = { status: "BLOQUEADO" };
-    } else {
-      novoStatus = { status: "ATIVO" };
-    }
-
-    var dadosRetorno = await axios.patch(
-      "http://localhost:8080/planos/" + plano.id + "/status",
-      novoStatus
-    );
-
-    if (dadosRetorno.status == 200) {
-      alert("Status atualizado com sucesso!");
-    } else {
-      alert(dadosRetorno.data);
-      return;
-    }
+    await atualizarStatusPlano(plano);
 
     carregarDados();
   };

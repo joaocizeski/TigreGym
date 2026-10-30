@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Aluno, AlunoFormProps } from "../../../types/aluno";
-import axios from "axios";
+import { atualizarAluno, salvarAluno } from "@/app/services/alunoService";
 import { useRouter } from "next/navigation";
 
 export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
@@ -36,28 +36,22 @@ export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
   const handlerSalvar = async (formData: FormData) => {
     // Se o aluno já existe, edita ele
     if (alunoExistente) {
-      var dadosRetorno = await axios.put(
-        "http://localhost:8080/alunos/" + aluno.id,
-        aluno
-      );
+      var dadosRetorno = await atualizarAluno(aluno);
 
-      if (dadosRetorno.status == 200) {
+      if (dadosRetorno) {
         alert("Aluno foi salvo com sucesso!");
       } else {
-        alert(dadosRetorno.data);
+        alert("Erro ao atualizar aluno!");
         return;
       }
     } else {
       // Se não existe, cria um novo
-      var dadosRetorno = await axios.post(
-        "http://localhost:8080/alunos",
-        aluno
-      );
+      var dadosRetorno = await salvarAluno(aluno);
 
-      if (dadosRetorno.status == 200) {
+      if (dadosRetorno) {
         alert("Aluno foi salvo com sucesso!");
       } else {
-        alert(dadosRetorno.data);
+        alert("Erro ao salvar aluno!");
         return;
       }
     }

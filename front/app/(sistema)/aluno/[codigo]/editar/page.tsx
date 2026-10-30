@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import AlunoForm from "../../components/AlunoForm";
 import { useEffect, useState } from "react";
-import { Aluno } from "../../aluno";
+import { Aluno } from "../../../../types/aluno";
 import axios from "axios";
 
 export default function EditarAluno() {

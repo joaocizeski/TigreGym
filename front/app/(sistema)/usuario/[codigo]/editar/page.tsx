@@ -4,8 +4,8 @@ import Link from "next/link";
 import UsuarioForm from "../../components/UsuarioForm";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Usuario } from "../../usuario";
-import axios from "axios";
+import { Usuario } from "../../../../types/usuario";
+import { consultaUsuarioPorId } from "@/app/services/usuarioService";
 
 export default function EditarUsuario() {
   const parametro = useParams();
@@ -22,12 +22,10 @@ export default function EditarUsuario() {
 
   // Busca o usuário pelo código
   const buscarDados = async () => {
-    const valorUsuarioBack = await axios.get<Usuario>(
-      "http://localhost:8080/usuarios/" + codigo
-    );
+    const valorUsuarioBack = await consultaUsuarioPorId(codigo)
 
-    if (valorUsuarioBack.status == 200) {
-      setUsuario(valorUsuarioBack.data);
+    if (valorUsuarioBack) {
+      setUsuario(valorUsuarioBack);
     } else {
       router.push("/usuario");
     }

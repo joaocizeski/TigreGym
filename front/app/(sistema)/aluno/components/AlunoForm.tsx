@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Aluno, AlunoFormProps } from "../aluno";
+import { Aluno, AlunoFormProps } from "../../../types/aluno";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 

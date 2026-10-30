@@ -3,7 +3,7 @@
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Aluno } from "./aluno";
+import { Aluno } from "../../types/aluno";
 
 export default function Alunos() {
   // Guarda a lista de alunos que será mostrada na tela

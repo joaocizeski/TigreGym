@@ -62,7 +62,7 @@ public class UsuarioService {
     public CriarAdminResponse criarAdmin(CriarAdminRequest criarAdminRequest) {
 
         if (!criarAdminRequest.secretKey().equals(secret)) {
-            return new CriarAdminResponse(0L, "Usuario salvo com sucesso!");
+            throw new IllegalArgumentException("Chave inválida!");
         }
 
         Usuario usuarioAdminSalvar = new Usuario(criarAdminRequest);
@@ -70,7 +70,7 @@ public class UsuarioService {
 
         return new CriarAdminResponse(
                 usuarioAdminSalvar.getId(),
-                "Usuário Salvo com Sucesso!"
+                "Usuário salvo com sucesso!"
         );
     }
 

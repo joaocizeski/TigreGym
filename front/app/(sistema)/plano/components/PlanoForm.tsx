@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Plano, PlanoFormProps } from "../plano";
+import { Plano, PlanoFormProps } from "../../../types/plano";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 

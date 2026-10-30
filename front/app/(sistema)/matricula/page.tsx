@@ -3,7 +3,7 @@
 import axios from "@/node_modules/axios/index";
 import Link from "@/node_modules/next/link";
 import { useEffect, useState } from "react";
-import { Matricula } from "./matricula";
+import { Matricula } from "../../types/matricula";
 
 export default function Matriculas() {
   // Guarda a lista de matrículas que será mostrada na tela

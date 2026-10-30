@@ -3,7 +3,7 @@
 import axios from "@/node_modules/axios/index";
 import Link from "@/node_modules/next/link";
 import { useEffect, useState } from "react";
-import { Plano } from "./plano";
+import { Plano } from "../../types/plano";
 
 export default function Planos() {
   // Guarda a lista de planos que será mostrada na tela

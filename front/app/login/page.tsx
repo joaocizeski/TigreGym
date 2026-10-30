@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { LoginResponse } from "../types/auth";
 
 export default function Login() {
@@ -18,6 +19,7 @@ export default function Login() {
       );
 
       if (loginResposta.status == 200) {
+        Cookies.set('token', loginResposta.data.token,{secure: true, expires: 7})
         router.push("/home");
       }
     } catch (error) {

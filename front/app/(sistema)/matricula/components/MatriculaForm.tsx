@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Matricula, MatriculaFormProps } from "../matricula";
-import { Aluno } from "../../aluno/aluno";
-import { Plano } from "../../plano/plano";
+import { Matricula, MatriculaFormProps } from "../../../types/matricula";
+import { Aluno } from "../../../types/aluno";
+import { Plano } from "../../../types/plano";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 

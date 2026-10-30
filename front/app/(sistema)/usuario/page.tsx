@@ -1,9 +1,9 @@
 "use client";
 
-import axios from "@/node_modules/axios/index";
+import { atualizarStatusUsuario, buscarListaUsuarios, deletarUsuario } from "@/app/services/usuarioService";
+import { Usuario } from "@/app/types/usuario";
 import Link from "@/node_modules/next/link";
 import { useEffect, useState } from "react";
-import { Usuario } from "./usuario";
 
 export default function Usuarios() {
   // Guarda a lista de usuários que será mostrada na tela
@@ -18,12 +18,10 @@ export default function Usuarios() {
   const carregarDados = async () => {
     try {
       // Faz uma requisição GET para o backend
-      const dados = await axios.get<Usuario[]>(
-        "http://localhost:8080/usuarios"
-      );
+      const dados = await buscarListaUsuarios();
+        
+      setUsuarios( dados);
 
-      // Guarda os usuários recebidos para atualizar a tela
-      setUsuarios(dados.data);
     } catch (error) {
       alert("Erro ao carregar dados!");
     }
@@ -31,14 +29,13 @@ export default function Usuarios() {
 
   // Faz a exclusão sem apagar o usuário do banco
   const handleDeletarUsuario = async (usuario: Usuario) => {
-    var dadosRetorno = await axios.delete(
-      "http://localhost:8080/usuarios/" + usuario.id + "/excluir"
-    );
 
-    if (dadosRetorno.status == 200) {
+    var dadosRetorno = await deletarUsuario(usuario.id || 0);
+
+    if(dadosRetorno==200){
       alert("Excluído com sucesso!");
     } else {
-      alert(dadosRetorno.data);
+      alert("Erro ao excluir usuário!");
       return;
     }
 
@@ -48,27 +45,8 @@ export default function Usuarios() {
 
   // Troca o status entre ATIVO e BLOQUEADO
   const handleAlterarStatusUsuario = async (usuario: Usuario) => {
-    var novoStatus = {};
+    await atualizarStatusUsuario(usuario);
 
-    if (usuario.status === "ATIVO") {
-      novoStatus = { status: "BLOQUEADO" };
-    } else {
-      novoStatus = { status: "ATIVO" };
-    }
-
-    var dadosRetorno = await axios.patch(
-      "http://localhost:8080/usuarios/" + usuario.id + "/status",
-      novoStatus
-    );
-
-    if (dadosRetorno.status == 200) {
-      alert("Status atualizado com sucesso!");
-    } else {
-      alert(dadosRetorno.data);
-      return;
-    }
-
-    // Atualiza a lista com o novo status
     carregarDados();
   };
 

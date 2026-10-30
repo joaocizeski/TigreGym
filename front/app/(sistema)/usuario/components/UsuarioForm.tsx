@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Usuario, UsuarioFormProps } from "../usuario";
+import { Usuario, UsuarioFormProps } from "../../../types/usuario";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
@@ -35,28 +35,22 @@ export default function UsuarioForm({ usuarioExistente }: UsuarioFormProps) {
   const handlerSalvar = async (formData: FormData) => {
     // Se o usuário já existe, edita ele
     if (usuarioExistente) {
-      var dadosRetorno = await axios.put(
-        "http://localhost:8080/usuarios/" + usuario.id,
-        usuario
-      );
+      var dadosRetorno = await atualizarUsuario(usuario);
 
-      if (dadosRetorno.status == 200) {
+      if (dadosRetorno) {
         alert("Usuário foi salvo com sucesso!");
       } else {
-        alert(dadosRetorno.data);
+        alert("Erro ao atualizar Usuário!");
         return;
       }
     } else {
-      // Se não existe, cria um novo
-      var dadosRetorno = await axios.post(
-        "http://localhost:8080/usuarios",
-        usuario
-      );
+      var dadosRetorno = await salvarUsuario(usuario);
+        if(dadosRetorno){
 
       if (dadosRetorno.status == 200) {
         alert("Usuário foi salvo com sucesso!");
       } else {
-        alert(dadosRetorno.data);
+        alert("Erro ao salvar Usuário!");
         return;
       }
     }

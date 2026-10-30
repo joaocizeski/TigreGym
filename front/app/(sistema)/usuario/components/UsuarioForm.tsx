@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import Link from "next/link";
 import { useState } from "react";
 import { Usuario, UsuarioFormProps } from "../../../types/usuario";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import { atualizarUsuario, salvarUsuario } from "@/app/services/usuarioService";
 
 export default function UsuarioForm({ usuarioExistente }: UsuarioFormProps) {
   const router = useRouter();
@@ -33,31 +33,38 @@ export default function UsuarioForm({ usuarioExistente }: UsuarioFormProps) {
   };
 
   const handlerSalvar = async (formData: FormData) => {
-    // Se o usuário já existe, edita ele
-    if (usuarioExistente) {
-      var dadosRetorno = await atualizarUsuario(usuario);
-
-      if (dadosRetorno) {
-        alert("Usuário foi salvo com sucesso!");
+    try {
+      // Se o usuário já existe, atualiza
+      if (usuarioExistente) {
+        const dadosRetorno = await atualizarUsuario(usuario);
+  
+        if (dadosRetorno) {
+          alert("Usuário foi salvo com sucesso!");
+        } else {
+          alert("Erro ao atualizar Usuário!");
+          return;
+        }
+  
       } else {
-        alert("Erro ao atualizar Usuário!");
-        return;
+        // Se não existe, cria novo usuário
+        const dadosRetorno = await salvarUsuario(usuario);
+  
+        if (dadosRetorno) {
+          alert("Usuário foi salvo com sucesso!");
+        } else {
+          alert("Erro ao salvar Usuário!");
+          return;
+        }
       }
-    } else {
-      var dadosRetorno = await salvarUsuario(usuario);
-        if(dadosRetorno){
-
-      if (dadosRetorno.status == 200) {
-        alert("Usuário foi salvo com sucesso!");
-      } else {
-        alert("Erro ao salvar Usuário!");
-        return;
-      }
+  
+      router.push("/usuario");
+  
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao salvar Usuário!");
     }
-
-    router.push("/usuario");
   };
-
+  
   return (
     <form action={handlerSalvar} className="w-full">
       <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-8 shadow-2xl">

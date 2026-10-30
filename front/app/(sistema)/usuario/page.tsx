@@ -5,50 +5,51 @@ import { Usuario } from "@/app/types/usuario";
 import Link from "@/node_modules/next/link";
 import { useEffect, useState } from "react";
 
-export default function Usuarios() {
-  // Guarda a lista de usuários que será mostrada na tela
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+export default function Usuarios(){
 
-  // Quando a página abrir, carrega os dados cadastrados
-  useEffect(() => {
-    carregarDados();
-  }, []);
+  const [usuarios,setUsuarios] = useState<Usuario[]>([]);
 
-  // Busca no backend a lista de usuários
-  const carregarDados = async () => {
-    try {
-      // Faz uma requisição GET para o backend
-      const dados = await buscarListaUsuarios();
-        
-      setUsuarios( dados);
+  useEffect(()=>{
+      carregarDados();
+  },[]);
 
-    } catch (error) {
-      alert("Erro ao carregar dados!");
-    }
-  };
+  const carregarDados = async ()=>{
 
-  // Faz a exclusão sem apagar o usuário do banco
-  const handleDeletarUsuario = async (usuario: Usuario) => {
+      try {
+          const dados = await buscarListaUsuarios();
 
-    var dadosRetorno = await deletarUsuario(usuario.id || 0);
+          setUsuarios( dados);
 
-    if(dadosRetorno==200){
-      alert("Excluído com sucesso!");
-    } else {
-      alert("Erro ao excluir usuário!");
-      return;
-    }
+      } catch (error) {
+          alert("Erro ao carregar dados!")
+      }
+     
 
-    // Atualiza a lista depois da exclusão
-    carregarDados();
-  };
+  }
 
-  // Troca o status entre ATIVO e BLOQUEADO
-  const handleAlterarStatusUsuario = async (usuario: Usuario) => {
-    await atualizarStatusUsuario(usuario);
+  const handleDeletarUsuario = async(usuario:Usuario) =>{
 
-    carregarDados();
-  };
+      var dadosRetorno = await  deletarUsuario(usuario.id || 0);
+     
+      if(dadosRetorno==200){
+          alert("Excluido com sucesso!");
+      }else{
+          alert("Erro ao excluir usuário!");
+
+          return;
+      }
+
+      carregarDados();
+
+  }
+
+  const handleAlterarStatusUsuario = async(usuario:Usuario) =>{
+
+      await atualizarStatusUsuario(usuario);
+
+      carregarDados();
+
+  }
 
   return (
     <div className="w-full bg-[#070707] px-6 py-8 md:px-10">

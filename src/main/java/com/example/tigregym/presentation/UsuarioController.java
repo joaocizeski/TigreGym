@@ -33,12 +33,12 @@ public class UsuarioController {
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<CriarAdminResponse> criarAdmin(@RequestBody CriarAdminRequest criarAdminRequest) {
+    public ResponseEntity<?> criarAdmin(@RequestBody CriarAdminRequest criarAdminRequest) {
         try {
             CriarAdminResponse respostaSalvar = usuarioService.criarAdmin(criarAdminRequest);
             return ResponseEntity.ok(respostaSalvar);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

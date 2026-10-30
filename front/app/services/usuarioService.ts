@@ -1,3 +1,4 @@
+
 import { Usuario } from "../types/usuario";
 import api from "./api";
 
@@ -50,14 +51,14 @@ export async function consultaUsuarioPorId(id:number):Promise<Usuario>{
 
 }
 
-export async function atualizarUsuario (usuario:Usuario): Promise<number>{
+export async function  atualizarUsuario (usuario:Usuario): Promise<number>{
     var dadosRetorno = await  
     api.put<number>('http://localhost:8080/usuarios/'+usuario.id,usuario);
     return dadosRetorno.data;
 }
 
 
-export async function salvarUsuario (usuario:Usuario): Promise<number>{
+export async function  salvarUsuario (usuario:Usuario): Promise<number>{
     var dadosRetorno = await  
     api.post<number>('http://localhost:8080/usuarios',usuario);
     return dadosRetorno.data;

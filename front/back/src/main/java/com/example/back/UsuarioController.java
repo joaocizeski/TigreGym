@@ -45,7 +45,7 @@ public class UsuarioController {
                 txtEmail.getText(),
                 txtSenha.getText(),
                 txtCpf.getText(),
-                "lfd4156498465s15g1klçfsda");
+                "lfd4156498465s15g1klfsda");
 
         int respostaAPI = executaMetodoAPI("http://localhost:8080/usuarios/admin",jsonRequest,"POST");
 

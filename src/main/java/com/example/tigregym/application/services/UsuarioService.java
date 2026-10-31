@@ -82,8 +82,6 @@ public class UsuarioService {
                     .getPrincipal();
         }
 
-
-
     public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) {
 
         if (id == 0L) {

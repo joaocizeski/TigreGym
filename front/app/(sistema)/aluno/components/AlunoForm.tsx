@@ -5,16 +5,15 @@ import { useState } from "react";
 import { Aluno, AlunoFormProps } from "../../../types/aluno";
 import { atualizarAluno, salvarAluno } from "@/app/services/alunoService";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
   const router = useRouter();
 
-  // Usa os dados existentes quando for edição
   const [aluno, setAluno] = useState<Aluno>(
     alunoExistente || new Aluno(null, "", "", "", "", "", "ATIVO")
   );
 
-  // Muda somente o campo que foi digitado
   const handlerChange = (
     campo: "nome" | "cpf" | "dataNascimento" | "telefone" | "email",
     valor: string
@@ -34,29 +33,51 @@ export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
   };
 
   const handlerSalvar = async (formData: FormData) => {
-    // Se o aluno já existe, edita ele
-    if (alunoExistente) {
-      var dadosRetorno = await atualizarAluno(aluno);
+    try {
 
-      if (dadosRetorno) {
-        alert("Aluno foi salvo com sucesso!");
+      if (alunoExistente) {
+
+        var dadosRetorno = await atualizarAluno(aluno);
+
+        if (dadosRetorno) {
+          alert("Aluno foi salvo com sucesso!");
+        } else {
+          alert("Erro ao atualizar aluno!");
+          return;
+        }
+
       } else {
-        alert("Erro ao atualizar aluno!");
-        return;
-      }
-    } else {
-      // Se não existe, cria um novo
-      var dadosRetorno = await salvarAluno(aluno);
 
-      if (dadosRetorno) {
-        alert("Aluno foi salvo com sucesso!");
+        var dadosRetorno = await salvarAluno(aluno);
+
+        if (dadosRetorno) {
+          alert("Aluno foi salvo com sucesso!");
+        } else {
+          alert("Erro ao salvar aluno!");
+          return;
+        }
+
+      }
+
+      router.push("/aluno");
+
+    } catch (error) {
+
+      if (axios.isAxiosError(error)) {
+
+        const mensagem = error.response?.data;
+
+        if (mensagem) {
+          alert(mensagem);
+        } else {
+          alert("Erro ao salvar aluno!");
+        }
+
       } else {
         alert("Erro ao salvar aluno!");
-        return;
       }
-    }
 
-    router.push("/aluno");
+    }
   };
 
   return (
@@ -71,10 +92,13 @@ export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
             Cadastro de aluno
           </h2>
 
-          <p className="text-zinc-500 mt-2">Preencha os dados do aluno.</p>
+          <p className="text-zinc-500 mt-2">
+            Preencha os dados do aluno.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
           <div>
             <label className="block text-sm font-semibold text-zinc-300 mb-2">
               Nome completo:
@@ -100,7 +124,7 @@ export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
               value={aluno.cpf}
               required
               onChange={(e) => handlerChange("cpf", e.target.value)}
-              placeholder="Digite o CPF"
+              placeholder="000.000.000-00"
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-white outline-none focus:border-yellow-400 transition"
             />
           </div>
@@ -115,7 +139,9 @@ export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
               type="date"
               value={aluno.dataNascimento}
               required
-              onChange={(e) => handlerChange("dataNascimento", e.target.value)}
+              onChange={(e) =>
+                handlerChange("dataNascimento", e.target.value)
+              }
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-white outline-none focus:border-yellow-400 transition"
             />
           </div>
@@ -130,7 +156,7 @@ export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
               value={aluno.telefone}
               required
               onChange={(e) => handlerChange("telefone", e.target.value)}
-              placeholder="Digite o telefone"
+              placeholder="(48) 99999-9999"
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-white outline-none focus:border-yellow-400 transition"
             />
           </div>
@@ -146,10 +172,11 @@ export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
               value={aluno.email}
               required
               onChange={(e) => handlerChange("email", e.target.value)}
-              placeholder="Digite o e-mail"
+              placeholder="aluno@email.com"
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-white outline-none focus:border-yellow-400 transition"
             />
           </div>
+
         </div>
 
         <div className="flex justify-end gap-3 mt-8">

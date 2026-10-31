@@ -30,11 +30,12 @@ public class UsuarioService {
 
         Email email = new Email(request.email());
 
-        Usuario usuario = usuarioRepository
-                .findByEmailAndSenha(email, request.senha())
-                .orElse(null);
+        if (usuarioRepository.existsUsuarioByEmailAndSenha(email, request.senha())) {
 
-        if (usuario != null && usuario.getStatus() == EnumStatusUsuario.ATIVO) {
+            Usuario usuario = usuarioRepository
+                    .findByEmailAndSenha(email, request.senha())
+                    .orElse(null);
+
             var token = tokenService.gerarToken(usuario);
             return new LoginResponse(token);
         }
@@ -134,5 +135,19 @@ public class UsuarioService {
         }
 
         return false;
+    }
+
+    public UsuarioResponse BuscarUsuariologado() {
+
+        try {
+            var usuarioLogado = getUsuarioLogado();
+            return usuarioRepository.findById(usuarioLogado.id())
+                    .stream()
+                    .map(UsuarioResponse::new)
+                    .findFirst()
+                    .orElse(null);
+        }catch (Exception e){
+            throw new RuntimeException("Erro ao buscar usuário logado");
+        }
     }
 }

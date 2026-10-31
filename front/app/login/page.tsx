@@ -4,9 +4,13 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { LoginResponse } from "../types/auth";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/slices/authSlice";
+import { buscarUsuarioLogado } from "../services/usuarioService";
 
 export default function Login() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleLogin = async (formData: FormData) => {
     const emailTela = formData.get("email")?.toString() ?? "";
@@ -15,14 +19,36 @@ export default function Login() {
     try {
       const loginResposta = await axios.post<LoginResponse>(
         "http://localhost:8080/auth/login",
-        { email: emailTela, senha: senhaTela }
+        {
+          email: emailTela,
+          senha: senhaTela,
+        }
       );
 
       if (loginResposta.status == 200) {
-        Cookies.set('token', loginResposta.data.token,{secure: true, expires: 7})
+        // Salva o token para as próximas requisições autenticadas
+        Cookies.set("token", loginResposta.data.token, {
+          secure: true,
+          expires: 7,
+        });
+
+        // Busca os dados do usuário que acabou de fazer login
+        var usuarioLogado = await buscarUsuarioLogado();
+
+        // Salva token e usuário no Redux
+        dispatch(
+          login({
+            token: loginResposta.data.token,
+            usuario: { ...usuarioLogado }
+          })
+        );
+
         router.push("/home");
+      } else {
+        alert("Login ou senha Invalido!");
       }
     } catch (error) {
+      console.log(error);
       alert("Login ou senha Invalido!");
     }
   };
@@ -32,8 +58,11 @@ export default function Login() {
       <div className="grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
         <section className="relative hidden overflow-hidden border-r border-zinc-900 lg:flex lg:items-center">
           <div className="absolute -left-36 -top-36 h-96 w-96 rounded-full border border-[#F5C518]/30" />
+
           <div className="absolute -left-16 -top-16 h-96 w-96 rounded-full border border-[#F5C518]/10" />
+
           <div className="absolute -bottom-48 right-10 h-[520px] w-[520px] rounded-full border border-[#F5C518]/20" />
+
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(245,197,24,0.08),transparent_30%)]" />
 
           <div className="relative z-10 max-w-xl px-16">
@@ -53,6 +82,7 @@ export default function Login() {
           <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-[#0d1215] p-8 shadow-2xl shadow-black/40">
             <div className="mb-8">
               <h2 className="text-3xl font-black">Bem-vindo!</h2>
+
               <p className="mt-2 text-sm text-zinc-400">
                 Acesse sua conta para continuar
               </p>
@@ -63,6 +93,7 @@ export default function Login() {
                 <label className="mb-2 block text-sm font-semibold text-zinc-300">
                   E-mail
                 </label>
+
                 <input
                   name="email"
                   type="email"
@@ -76,6 +107,7 @@ export default function Login() {
                 <label className="mb-2 block text-sm font-semibold text-zinc-300">
                   Senha
                 </label>
+
                 <input
                   name="senha"
                   type="password"

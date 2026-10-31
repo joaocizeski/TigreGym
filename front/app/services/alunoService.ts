@@ -2,7 +2,7 @@ import { Aluno } from "../types/aluno";
 import api from "./api";
 
 export async function buscarListaAlunos(): Promise<Aluno[]> {
-    const dados = await api.get<Aluno[]>("http://localhost:8080/alunos");
+    const dados = await api.get<Aluno[]>("/alunos");
 
     if (dados.status == 200) {
         return dados.data;
@@ -12,7 +12,7 @@ export async function buscarListaAlunos(): Promise<Aluno[]> {
 }
 
 export async function deletarAluno(id: number): Promise<number> {
-    var dados = await api.delete("http://localhost:8080/alunos/" + id + "/excluir");
+    var dados = await api.delete("/alunos/" + id + "/excluir");
     return dados.status;
 }
 
@@ -26,7 +26,7 @@ export async function atualizarStatusAluno(aluno: Aluno): Promise<void> {
     }
 
     var dadosRetorno = await api.patch(
-        "http://localhost:8080/alunos/" + aluno.id + "/status",
+        "/alunos/" + aluno.id + "/status",
         novoStatus
     );
 
@@ -39,13 +39,13 @@ export async function atualizarStatusAluno(aluno: Aluno): Promise<void> {
 }
 
 export async function consultaAlunoPorId(id: number): Promise<Aluno> {
-    const valorAlunoBack = await api.get<Aluno>("http://localhost:8080/alunos/" + id);
+    const valorAlunoBack = await api.get<Aluno>("/alunos/" + id);
     return valorAlunoBack.data;
 }
 
 export async function atualizarAluno(aluno: Aluno): Promise<Aluno> {
     var dadosRetorno = await api.put<Aluno>(
-        "http://localhost:8080/alunos/" + aluno.id,
+        "/alunos/" + aluno.id,
         aluno
     );
 
@@ -54,7 +54,7 @@ export async function atualizarAluno(aluno: Aluno): Promise<Aluno> {
 
 export async function salvarAluno(aluno: Aluno): Promise<Aluno> {
     var dadosRetorno = await api.post<Aluno>(
-        "http://localhost:8080/alunos",
+        "/alunos",
         aluno
     );
 

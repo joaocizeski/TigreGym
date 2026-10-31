@@ -11,7 +11,7 @@ function dadosMatricula(matricula: Matricula) {
 }
 
 export async function buscarListaMatriculas(): Promise<Matricula[]> {
-    const dados = await api.get<Matricula[]>("http://localhost:8080/matriculas");
+    const dados = await api.get<Matricula[]>("/matriculas");
 
     if (dados.status == 200) {
         return dados.data;
@@ -22,7 +22,7 @@ export async function buscarListaMatriculas(): Promise<Matricula[]> {
 
 export async function deletarMatricula(id: number): Promise<number> {
     var dados = await api.delete(
-        "http://localhost:8080/matriculas/" + id + "/excluir"
+        "/matriculas/" + id + "/excluir"
     );
 
     return dados.status;
@@ -38,7 +38,7 @@ export async function atualizarStatusMatricula(matricula: Matricula): Promise<vo
     }
 
     var dadosRetorno = await api.patch(
-        "http://localhost:8080/matriculas/" + matricula.id + "/status",
+        "/matriculas/" + matricula.id + "/status",
         novoStatus
     );
 
@@ -52,7 +52,7 @@ export async function atualizarStatusMatricula(matricula: Matricula): Promise<vo
 
 export async function consultaMatriculaPorId(id: number): Promise<Matricula> {
     const valorMatriculaBack = await api.get<Matricula>(
-        "http://localhost:8080/matriculas/" + id
+        "/matriculas/" + id
     );
 
     return valorMatriculaBack.data;
@@ -60,7 +60,7 @@ export async function consultaMatriculaPorId(id: number): Promise<Matricula> {
 
 export async function atualizarMatricula(matricula: Matricula): Promise<Matricula> {
     var dadosRetorno = await api.put<Matricula>(
-        "http://localhost:8080/matriculas/" + matricula.id,
+        "/matriculas/" + matricula.id,
         dadosMatricula(matricula)
     );
 
@@ -69,7 +69,7 @@ export async function atualizarMatricula(matricula: Matricula): Promise<Matricul
 
 export async function salvarMatricula(matricula: Matricula): Promise<Matricula> {
     var dadosRetorno = await api.post<Matricula>(
-        "http://localhost:8080/matriculas",
+        "/matriculas",
         dadosMatricula(matricula)
     );
 

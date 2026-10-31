@@ -1,57 +1,45 @@
-"use client";
+'use client';
 
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { LoginResponse } from "../types/auth";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/slices/authSlice";
+import { loginBack } from "../services/authService";
 import { buscarUsuarioLogado } from "../services/usuarioService";
+import { login } from "../redux/slices/authSlice";
 
-export default function Login() {
+
+export default function Login(){
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch =useDispatch();
 
-  const handleLogin = async (formData: FormData) => {
-    const emailTela = formData.get("email")?.toString() ?? "";
-    const senhaTela = formData.get("senha")?.toString() ?? "";
 
-    try {
-      const loginResposta = await axios.post<LoginResponse>(
-        "http://localhost:8080/auth/login",
-        {
-          email: emailTela,
-          senha: senhaTela,
-        }
-      );
+  const handleLogin = async(formData:FormData) =>{
+      try {
+          debugger;
+          const emailTela = formData.get("email")?.toString() ?? "";
+          const senhaTela = formData.get("senha")?.toString() ?? "";
 
-      if (loginResposta.status == 200) {
-        // Salva o token para as próximas requisições autenticadas
-        Cookies.set("token", loginResposta.data.token, {
-          secure: true,
-          expires: 7,
-        });
+          var loginResposta = await loginBack(emailTela,senhaTela);
 
-        // Busca os dados do usuário que acabou de fazer login
-        var usuarioLogado = await buscarUsuarioLogado();
+          if(loginResposta != null){
+              Cookies.set('token',loginResposta.token,{secure: true, expires: 7});
+        
+              var usuarioLogado = await buscarUsuarioLogado();
 
-        // Salva token e usuário no Redux
-        dispatch(
-          login({
-            token: loginResposta.data.token,
-            usuario: { ...usuarioLogado }
-          })
-        );
-
-        router.push("/home");
-      } else {
-        alert("Login ou senha Invalido!");
+             dispatch(login(
+              {
+                  token:loginResposta.token,
+                  usuario:{...usuarioLogado}
+              }
+              ));
+              router.push("/home")
+          }else{
+              alert("Login ou senha Invalido!")
+          }
+      } catch (error) {
+          alert("Login ou senha Invalido!")
       }
-    } catch (error) {
-      console.log(error);
-      alert("Login ou senha Invalido!");
-    }
-  };
+  }
 
   return (
     <main className="min-h-screen bg-[#070707] text-white">

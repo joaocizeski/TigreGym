@@ -13,4 +13,19 @@ public interface PlanoRepository extends JpaRepository<Plano, Long> {
 
     Optional<List<Plano>> findByStatusNot(EnumStatusPlano status);
 
+    List<Plano> findByEmpresa_IdAndStatusNot(Long empresaId, EnumStatusPlano status);
+
+    List<Plano> findByEmpresa_IdOrderByStatusAsc(Long empresaId);
+
+    Optional<Plano> findByIdAndEmpresa_IdAndStatus(
+            Long id,
+            Long empresaId,
+            EnumStatusPlano status
+    );
+
+    Optional<Plano> findByIdAndEmpresa_IdAndStatusNot(
+            Long id,
+            Long empresaId,
+            EnumStatusPlano status
+    );
 }

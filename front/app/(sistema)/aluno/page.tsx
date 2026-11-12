@@ -2,12 +2,15 @@
 
 import { atualizarStatusAluno, buscarListaAlunos, deletarAluno } from "@/app/services/alunoService";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { setAlunos } from "../../redux/slices/alunosSlice";
 import { Aluno } from "../../types/aluno";
 
 export default function Alunos() {
-  // Guarda a lista de alunos que será mostrada na tela
-  const [alunos, setAlunos] = useState<Aluno[]>([]);
+  const alunos = useSelector((state: RootState) => state.alunos.lista);
+  const dispatch = useDispatch();
 
   // Quando a página abrir, carrega os dados cadastrados
   useEffect(() => {
@@ -19,8 +22,8 @@ export default function Alunos() {
     try {
       const dados = await buscarListaAlunos();
 
-      // Guarda os alunos recebidos para atualizar a tela
-      setAlunos(dados);
+      // Guarda a lista de alunos no Redux
+      dispatch(setAlunos(dados));
     } catch (error) {
       console.log(error);
       alert("Erro ao carregar dados!");
@@ -106,6 +109,7 @@ export default function Alunos() {
                 <th className="p-5">Nascimento</th>
                 <th className="p-5">Telefone</th>
                 <th className="p-5">E-mail</th>
+                <th className="p-5">Cidade/UF</th>
                 <th className="p-5">Status</th>
                 <th className="p-5">Ações</th>
               </tr>
@@ -116,7 +120,11 @@ export default function Alunos() {
               {alunos.map((aluno) => (
                 <tr
                   key={aluno.id}
-                  className="border-t border-zinc-800 hover:bg-zinc-900/40"
+                  className={
+                    aluno.status === "EXCLUIDO"
+                      ? "border-t border-red-900/40 bg-red-950/20 opacity-60"
+                      : "border-t border-zinc-800 hover:bg-zinc-900/40"
+                  }
                 >
                   <td className="p-5 text-zinc-500">{aluno.id}</td>
 
@@ -129,6 +137,12 @@ export default function Alunos() {
                   <td className="p-5 text-zinc-400">{aluno.telefone}</td>
 
                   <td className="p-5 text-zinc-400">{aluno.email}</td>
+
+                  <td className="p-5 text-zinc-400">
+                    {aluno.cidade && aluno.uf
+                      ? `${aluno.cidade}/${aluno.uf}`
+                      : "-"}
+                  </td>
 
                   <td className="p-5">
                     <span className={`inline-flex px-3 py-1 rounded-full border text-xs font-bold ${
@@ -143,39 +157,45 @@ export default function Alunos() {
                   </td>
 
                   <td className="p-5">
-                    <div className="flex items-center gap-4">
-                      <Link
-                        href={"/aluno/" + aluno.id + "/editar"}
-                        className="text-yellow-400 hover:text-yellow-300"
-                      >
-                        Editar
-                      </Link>
+                    {aluno.status === "EXCLUIDO" ? (
+                      <span className="text-red-400 font-bold">
+                        Registro excluído
+                      </span>
+                    ) : (
+                      <div className="flex items-center gap-4">
+                        <Link
+                          href={"/aluno/" + aluno.id + "/editar"}
+                          className="text-yellow-400 hover:text-yellow-300"
+                        >
+                          Editar
+                        </Link>
 
-                      <button
-                        onClick={() => handleDeletarAluno(aluno)}
-                        className="text-red-500 hover:text-red-400"
-                      >
-                        Excluir
-                      </button>
+                        <button
+                          onClick={() => handleDeletarAluno(aluno)}
+                          className="text-red-500 hover:text-red-400"
+                        >
+                          Excluir
+                        </button>
 
-                      <button
-                        onClick={() => handleAlterarStatusAluno(aluno)}
-                        className={
-                          aluno.status === "BLOQUEADO"
-                            ? "text-orange-400 hover:text-orange-300"
-                            : "text-green-400 hover:text-green-300"
-                        }
-                      >
-                        {aluno.status}
-                      </button>
-                    </div>
+                        <button
+                          onClick={() => handleAlterarStatusAluno(aluno)}
+                          className={
+                            aluno.status === "BLOQUEADO"
+                              ? "text-orange-400 hover:text-orange-300"
+                              : "text-green-400 hover:text-green-300"
+                          }
+                        >
+                          {aluno.status}
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
 
               {alunos.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="p-10 text-center text-zinc-500">
+                  <td colSpan={9} className="p-10 text-center text-zinc-500">
                     Nenhum aluno encontrado!
                   </td>
                 </tr>

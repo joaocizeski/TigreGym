@@ -1,8 +1,16 @@
 package com.example.tigregym.application.services;
 
-import com.example.tigregym.application.DTOs.*;
+import com.example.tigregym.application.DTOs.CriarAdminRequest;
+import com.example.tigregym.application.DTOs.CriarAdminResponse;
+import com.example.tigregym.application.DTOs.LoginRequest;
+import com.example.tigregym.application.DTOs.LoginResponse;
+import com.example.tigregym.application.DTOs.UsuarioLogado;
+import com.example.tigregym.application.DTOs.UsuarioRequest;
+import com.example.tigregym.application.DTOs.UsuarioResponse;
+import com.example.tigregym.domain.entities.Empresa;
 import com.example.tigregym.domain.entities.EnumStatusUsuario;
 import com.example.tigregym.domain.entities.Usuario;
+import com.example.tigregym.domain.repository.EmpresaRepository;
 import com.example.tigregym.domain.repository.UsuarioRepository;
 import com.example.tigregym.domain.valueobject.CPF;
 import com.example.tigregym.domain.valueobject.Email;
@@ -10,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -22,6 +29,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EmpresaRepository empresaRepository;
 
     @Autowired
     private TokenService tokenService;
@@ -47,14 +57,8 @@ public class UsuarioService {
 
         var usuarioLogado = getUsuarioLogado();
 
-        if (usuarioLogado.empresa_id() == null) {
-            return usuarioRepository.findAll()
-                    .stream()
-                    .map(UsuarioResponse::new)
-                    .toList();
-        }
-
-        return usuarioRepository.getUsuariosByEmpresa_Id(usuarioLogado.empresa_id())
+        return usuarioRepository
+                .findByEmpresa_IdOrderByStatusAsc(usuarioLogado.empresa_id())
                 .stream()
                 .map(UsuarioResponse::new)
                 .toList();
@@ -66,7 +70,14 @@ public class UsuarioService {
             throw new IllegalArgumentException("Chave inválida!");
         }
 
+        Empresa empresa = new Empresa();
+        empresa.setRazaoSocial(criarAdminRequest.razaoSocial());
+        empresa.setNomeFantasia(criarAdminRequest.nomeFantasia());
+        empresa.setCnpj(criarAdminRequest.cnpj());
+        empresaRepository.save(empresa);
+
         Usuario usuarioAdminSalvar = new Usuario(criarAdminRequest);
+        usuarioAdminSalvar.setEmpresa(empresa);
         usuarioRepository.save(usuarioAdminSalvar);
 
         return new CriarAdminResponse(
@@ -75,22 +86,36 @@ public class UsuarioService {
         );
     }
 
-        public UsuarioLogado getUsuarioLogado() {
-            return (UsuarioLogado) SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getPrincipal();
-        }
+    public UsuarioLogado getUsuarioLogado() {
+        return (UsuarioLogado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
     public UsuarioResponse salvarUsuario(UsuarioRequest usuario, Long id) {
 
+        var usuarioLogado = getUsuarioLogado();
+
+        var empresaLogada = empresaRepository
+                .findById(usuarioLogado.empresa_id())
+                .orElse(null);
+
+        if (empresaLogada == null) {
+            throw new IllegalStateException("Empresa do usuário não encontrada!");
+        }
+
         if (id == 0L) {
             Usuario usuarioBanco = new Usuario(usuario);
+            usuarioBanco.setEmpresa(empresaLogada);
             usuarioRepository.save(usuarioBanco);
             return new UsuarioResponse(usuarioBanco);
         }
 
-        Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
+        Usuario usuarioBanco = usuarioRepository
+                .findByIdAndEmpresa_IdAndStatusNot(
+                        id,
+                        usuarioLogado.empresa_id(),
+                        EnumStatusUsuario.EXCLUIDO
+                )
+                .orElse(null);
 
         if (usuarioBanco != null) {
             usuarioBanco.setNome(usuario.nome());
@@ -98,13 +123,7 @@ public class UsuarioService {
             usuarioBanco.setEmail(new Email(usuario.email()));
             usuarioBanco.setSenha(usuario.senha());
 
-            // Se não enviar role na edição, mantém a role que já estava salva
-            if (usuario.role() != null && !usuario.role().isBlank()) {
-                usuarioBanco.setRole(usuario.role());
-            }
-
             usuarioRepository.save(usuarioBanco);
-
             return new UsuarioResponse(usuarioBanco);
         }
 
@@ -113,7 +132,15 @@ public class UsuarioService {
 
     public UsuarioResponse buscarPorId(Long id) {
 
-        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+        var usuarioLogado = getUsuarioLogado();
+
+        Usuario usuario = usuarioRepository
+                .findByIdAndEmpresa_IdAndStatusNot(
+                        id,
+                        usuarioLogado.empresa_id(),
+                        EnumStatusUsuario.EXCLUIDO
+                )
+                .orElse(null);
 
         if (usuario == null) {
             return null;
@@ -124,7 +151,15 @@ public class UsuarioService {
 
     public boolean atualizarStatus(EnumStatusUsuario status, Long id) {
 
-        Usuario usuarioBanco = usuarioRepository.findById(id).orElse(null);
+        var usuarioLogado = getUsuarioLogado();
+
+        Usuario usuarioBanco = usuarioRepository
+                .findByIdAndEmpresa_IdAndStatusNot(
+                        id,
+                        usuarioLogado.empresa_id(),
+                        EnumStatusUsuario.EXCLUIDO
+                )
+                .orElse(null);
 
         if (usuarioBanco != null) {
             usuarioBanco.setStatus(status);
@@ -139,12 +174,19 @@ public class UsuarioService {
 
         try {
             var usuarioLogado = getUsuarioLogado();
-            return usuarioRepository.findById(usuarioLogado.id())
+
+            return usuarioRepository
+                    .findByIdAndEmpresa_IdAndStatusNot(
+                            usuarioLogado.id(),
+                            usuarioLogado.empresa_id(),
+                            EnumStatusUsuario.EXCLUIDO
+                    )
                     .stream()
                     .map(UsuarioResponse::new)
                     .findFirst()
                     .orElse(null);
-        }catch (Exception e){
+
+        } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar usuário logado");
         }
     }

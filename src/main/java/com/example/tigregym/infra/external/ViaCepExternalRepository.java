@@ -1,6 +1,7 @@
 package com.example.tigregym.infra.external;
 
 import com.example.tigregym.domain.interfaces.IViaCepExternalRepository;
+import com.example.tigregym.domain.valueobject.EnderecoViaCep;
 import com.example.tigregym.infra.dto.ViaCepResponse;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class ViaCepExternalRepository implements IViaCepExternalRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Async
-    public ViaCepResponse buscarEnderecoViaCepPorCep(String cep) {
+    public EnderecoViaCep buscarEnderecoViaCepPorCep(String cep) {
         var url = "https://viacep.com.br/ws/" + cep.replaceAll("[^0-9]", "") + "/json/";
         try {
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
@@ -34,7 +35,13 @@ public class ViaCepExternalRepository implements IViaCepExternalRepository {
                 if (viaCepResponse.getErro() != null && viaCepResponse.getErro()) {
                     throw new RuntimeException("CEP inválido!");
                 }
-                return viaCepResponse;
+                return new EnderecoViaCep(
+                        viaCepResponse.getCep(),
+                        viaCepResponse.getLogradouro(),
+                        viaCepResponse.getBairro(),
+                        viaCepResponse.getLocalidade(),
+                        viaCepResponse.getUf()
+                );
             }
             throw new RuntimeException("Erro ao consultar CEP!");
         } catch (Exception e){

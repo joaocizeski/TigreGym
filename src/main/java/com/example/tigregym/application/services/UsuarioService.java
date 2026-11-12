@@ -7,6 +7,7 @@ import com.example.tigregym.application.DTOs.LoginResponse;
 import com.example.tigregym.application.DTOs.UsuarioLogado;
 import com.example.tigregym.application.DTOs.UsuarioRequest;
 import com.example.tigregym.application.DTOs.UsuarioResponse;
+import com.example.tigregym.application.interfaces.ITokenService;
 import com.example.tigregym.domain.entities.Empresa;
 import com.example.tigregym.domain.entities.EnumStatusUsuario;
 import com.example.tigregym.domain.entities.Usuario;
@@ -35,7 +36,7 @@ public class UsuarioService implements IUsuarioService {
     private EmpresaRepository empresaRepository;
 
     @Autowired
-    private TokenService tokenService;
+    private ITokenService tokenService;
 
     public LoginResponse validarUsuarioAutenticadoRetornaToken(LoginRequest request) {
 
@@ -77,7 +78,12 @@ public class UsuarioService implements IUsuarioService {
         empresa.setCnpj(criarAdminRequest.cnpj());
         empresaRepository.save(empresa);
 
-        Usuario usuarioAdminSalvar = new Usuario(criarAdminRequest);
+        Usuario usuarioAdminSalvar = new Usuario();
+        usuarioAdminSalvar.setCpf(new CPF(criarAdminRequest.cpf()));
+        usuarioAdminSalvar.setNome(criarAdminRequest.nome());
+        usuarioAdminSalvar.setSenha(criarAdminRequest.senha());
+        usuarioAdminSalvar.setEmail(new Email(criarAdminRequest.email()));
+        usuarioAdminSalvar.setRole("ROLE_ADMIN");
         usuarioAdminSalvar.setEmpresa(empresa);
         usuarioRepository.save(usuarioAdminSalvar);
 
@@ -104,7 +110,12 @@ public class UsuarioService implements IUsuarioService {
         }
 
         if (id == 0L) {
-            Usuario usuarioBanco = new Usuario(usuario);
+            Usuario usuarioBanco = new Usuario();
+            usuarioBanco.setCpf(new CPF(usuario.cpf()));
+            usuarioBanco.setNome(usuario.nome());
+            usuarioBanco.setSenha(usuario.senha());
+            usuarioBanco.setEmail(new Email(usuario.email()));
+            usuarioBanco.setRole("ROLE_USER");
             usuarioBanco.setEmpresa(empresaLogada);
             usuarioRepository.save(usuarioBanco);
             return new UsuarioResponse(usuarioBanco);

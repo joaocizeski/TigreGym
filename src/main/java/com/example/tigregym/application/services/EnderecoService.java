@@ -16,11 +16,11 @@ public class EnderecoService implements IEnderecoService {
 
         var enderecoCompleto = viaCepExternalRepository.buscarEnderecoViaCepPorCep(cep);
 
-        return new EnderecoResponse( enderecoCompleto.getCep(),
-                enderecoCompleto.getLogradouro(),
-                enderecoCompleto.getBairro(),
-                enderecoCompleto.getLocalidade(),
-                enderecoCompleto.getUf());
+        return new EnderecoResponse( enderecoCompleto.cep(),
+                enderecoCompleto.logradouro(),
+                enderecoCompleto.bairro(),
+                enderecoCompleto.cidade(),
+                enderecoCompleto.uf());
    }
 
 }

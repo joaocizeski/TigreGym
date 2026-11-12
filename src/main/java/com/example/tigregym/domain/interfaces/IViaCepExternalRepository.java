@@ -1,9 +1,9 @@
 package com.example.tigregym.domain.interfaces;
 
-import com.example.tigregym.infra.dto.ViaCepResponse;
+import com.example.tigregym.domain.valueobject.EnderecoViaCep;
 
 public interface IViaCepExternalRepository {
 
-    ViaCepResponse buscarEnderecoViaCepPorCep(String cep);
+    EnderecoViaCep buscarEnderecoViaCepPorCep(String cep);
 
 }

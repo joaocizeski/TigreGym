@@ -11,6 +11,7 @@ import com.example.tigregym.domain.valueobject.Email;
 import com.example.tigregym.domain.valueobject.Telefone;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.tigregym.application.interfaces.IAlunoService;
+import com.example.tigregym.application.interfaces.IUsuarioService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class AlunoService implements IAlunoService {
     private AlunoRepository alunoRepository;
 
     @Autowired
-    private UsuarioService usuarioService;
+    private IUsuarioService usuarioService;
 
     @Autowired
     private EmpresaRepository empresaRepository;

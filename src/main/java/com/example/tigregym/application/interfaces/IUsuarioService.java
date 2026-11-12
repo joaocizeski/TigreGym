@@ -4,12 +4,15 @@ import com.example.tigregym.application.DTOs.CriarAdminRequest;
 import com.example.tigregym.application.DTOs.CriarAdminResponse;
 import com.example.tigregym.application.DTOs.LoginRequest;
 import com.example.tigregym.application.DTOs.LoginResponse;
+import com.example.tigregym.application.DTOs.UsuarioLogado;
 import com.example.tigregym.application.DTOs.UsuarioRequest;
 import com.example.tigregym.application.DTOs.UsuarioResponse;
 import com.example.tigregym.domain.entities.EnumStatusUsuario;
 import java.util.List;
 
 public interface IUsuarioService {
+
+    UsuarioLogado getUsuarioLogado();
 
     LoginResponse validarUsuarioAutenticadoRetornaToken(LoginRequest request);
 

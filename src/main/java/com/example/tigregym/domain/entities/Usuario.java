@@ -1,7 +1,5 @@
 package com.example.tigregym.domain.entities;
 
-import com.example.tigregym.application.DTOs.CriarAdminRequest;
-import com.example.tigregym.application.DTOs.UsuarioRequest;
 import com.example.tigregym.domain.valueobject.CPF;
 import com.example.tigregym.domain.valueobject.Email;
 import jakarta.persistence.*;
@@ -43,22 +41,6 @@ public class Usuario implements UserDetails {
     private Empresa empresa;
 
     private EnumStatusUsuario status = EnumStatusUsuario.ATIVO;
-
-    public Usuario(CriarAdminRequest criarAdminRequest) {
-        this.setCpf(new CPF(criarAdminRequest.cpf()));
-        this.setNome(criarAdminRequest.nome());
-        this.setSenha(criarAdminRequest.senha());
-        this.setEmail(new Email(criarAdminRequest.email()));
-        this.setRole("ROLE_ADMIN");
-    }
-
-    public Usuario(UsuarioRequest usuario) {
-        this.setCpf(new CPF(usuario.cpf()));
-        this.setNome(usuario.nome());
-        this.setSenha(usuario.senha());
-        this.setEmail(new Email(usuario.email()));
-        this.setRole("ROLE_USER");
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

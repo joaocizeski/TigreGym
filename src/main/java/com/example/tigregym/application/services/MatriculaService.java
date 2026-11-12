@@ -14,6 +14,7 @@ import com.example.tigregym.domain.repository.MatriculaRepository;
 import com.example.tigregym.domain.repository.PlanoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.tigregym.application.interfaces.IMatriculaService;
+import com.example.tigregym.application.interfaces.IUsuarioService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ public class MatriculaService implements IMatriculaService {
     private PlanoRepository planoRepository;
 
     @Autowired
-    private UsuarioService usuarioService;
+    private IUsuarioService usuarioService;
 
     @Autowired
     private EmpresaRepository empresaRepository;

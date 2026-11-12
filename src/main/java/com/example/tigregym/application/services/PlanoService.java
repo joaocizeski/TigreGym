@@ -8,6 +8,7 @@ import com.example.tigregym.domain.repository.EmpresaRepository;
 import com.example.tigregym.domain.repository.PlanoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.tigregym.application.interfaces.IPlanoService;
+import com.example.tigregym.application.interfaces.IUsuarioService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class PlanoService implements IPlanoService {
     private PlanoRepository planoRepository;
 
     @Autowired
-    private UsuarioService usuarioService;
+    private IUsuarioService usuarioService;
 
     @Autowired
     private EmpresaRepository empresaRepository;

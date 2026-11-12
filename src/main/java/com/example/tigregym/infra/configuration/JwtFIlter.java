@@ -1,6 +1,6 @@
 package com.example.tigregym.infra.configuration;
 
-import com.example.tigregym.application.services.TokenService;
+import com.example.tigregym.application.interfaces.ITokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ import java.io.IOException;
 public class JwtFIlter extends OncePerRequestFilter {
 
     @Autowired
-    private TokenService tokenService;
+    private ITokenService tokenService;
 
     @Override
     protected void doFilterInternal(

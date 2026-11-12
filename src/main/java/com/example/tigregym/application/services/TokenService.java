@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.tigregym.application.DTOs.UsuarioLogado;
+import com.example.tigregym.application.interfaces.ITokenService;
 import com.example.tigregym.domain.entities.EnumStatusUsuario;
 import com.example.tigregym.domain.entities.Token;
 import com.example.tigregym.domain.entities.Usuario;
@@ -19,7 +20,7 @@ import java.time.ZoneOffset;
 import java.util.UUID;
 
 @Service
-public class TokenService {
+public class TokenService implements ITokenService {
 
     @Value("${spring.secret}")
     private String secret;

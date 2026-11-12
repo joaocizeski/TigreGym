@@ -3,8 +3,10 @@ package com.example.tigregym.application.DTOs;
 import com.example.tigregym.domain.entities.Usuario;
 import com.example.tigregym.domain.valueobject.CPF;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
 
 public record UsuarioLogado(
         Long id,
@@ -20,7 +22,7 @@ public record UsuarioLogado(
                 usuario.getEmail().toString(),
                 usuario.getCpf(),
                 usuario.getEmpresa() != null ? usuario.getEmpresa().getId() : null,
-                usuario.getAuthorities()
+                List.of(new SimpleGrantedAuthority(usuario.getRole()))
         );
     }
 }

@@ -7,12 +7,13 @@ import com.example.tigregym.domain.entities.Plano;
 import com.example.tigregym.domain.repository.EmpresaRepository;
 import com.example.tigregym.domain.repository.PlanoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.example.tigregym.application.interfaces.IPlanoService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class PlanoService {
+public class PlanoService implements IPlanoService {
 
     @Autowired
     private PlanoRepository planoRepository;

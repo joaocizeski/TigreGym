@@ -71,10 +71,8 @@ public class JwtFIlter extends OncePerRequestFilter {
             }
 
         } else {
+            // Sem token, deixa o Spring Security decidir se o acesso é permitido
             SecurityContextHolder.clearContext();
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().println("Token inválido");
-            return;
         }
 
         filterChain.doFilter(request, response);

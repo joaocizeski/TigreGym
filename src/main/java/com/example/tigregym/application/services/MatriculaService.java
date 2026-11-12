@@ -13,13 +13,14 @@ import com.example.tigregym.domain.repository.EmpresaRepository;
 import com.example.tigregym.domain.repository.MatriculaRepository;
 import com.example.tigregym.domain.repository.PlanoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.example.tigregym.application.interfaces.IMatriculaService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class MatriculaService {
+public class MatriculaService implements IMatriculaService {
 
     @Autowired
     private MatriculaRepository matriculaRepository;

@@ -3,10 +3,11 @@ package com.example.tigregym.application.services;
 import com.example.tigregym.application.DTOs.EnderecoResponse;
 import com.example.tigregym.domain.interfaces.IViaCepExternalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.example.tigregym.application.interfaces.IEnderecoService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EnderecoService {
+public class EnderecoService implements IEnderecoService {
 
     @Autowired
     private IViaCepExternalRepository viaCepExternalRepository;

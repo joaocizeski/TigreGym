@@ -10,12 +10,13 @@ import com.example.tigregym.domain.valueobject.CPF;
 import com.example.tigregym.domain.valueobject.Email;
 import com.example.tigregym.domain.valueobject.Telefone;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.example.tigregym.application.interfaces.IAlunoService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class AlunoService {
+public class AlunoService implements IAlunoService {
 
     @Autowired
     private AlunoRepository alunoRepository;

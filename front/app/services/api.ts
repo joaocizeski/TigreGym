@@ -1,7 +1,9 @@
 'use client'
 
-import axios from "@/node_modules/axios/index"
-import Cookies from "js-cookie";
+import axios from "@/node_modules/axios/index";
+import { store } from "../redux/store";
+import { logout } from "../redux/slices/authSlice";
+import { limparAlunos } from "../redux/slices/alunosSlice";
 
 const api = axios.create({
     baseURL:'http://localhost:8080'
@@ -9,13 +11,25 @@ const api = axios.create({
 
 api.interceptors.request.use(
     (config) =>{
-        const token = Cookies.get('token');
+        const token = store.getState().auth.token;
 
         if(token){
-            config.headers.Authorization =`Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${token}`;
         }
 
         return config;
+    }
+);
+
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if(error.response?.status === 401){
+            store.dispatch(limparAlunos());
+            store.dispatch(logout());
+        }
+
+        return Promise.reject(error);
     }
 );
 

@@ -14,7 +14,7 @@ export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
 
   const [aluno, setAluno] = useState<Aluno>(
     alunoExistente ||
-      new Aluno(null, "", "", "", "", "", "", "", "S/N", "", "", "", "", "ATIVO")
+      new Aluno(null, "", "", "", "", "", "", "", "", "", "", "", "", "ATIVO")
   );
 
   const handlerChange = (
@@ -34,7 +34,7 @@ export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
     valor: string
   ) => {
 
-    if (campo === "numero" && valor !== "S/N") {
+    if (campo === "numero") {
       valor = valor.replace(/\D/g, "");
     }
 
@@ -339,19 +339,9 @@ export default function AlunoForm({ alunoExistente }: AlunoFormProps) {
 
             <input
               name="numero"
-              value={aluno.numero || ""}
+              value={aluno.numero === "S/N" ? "" : aluno.numero || ""}
               inputMode="numeric"
               pattern="[0-9]*"
-              onFocus={() => {
-                if (aluno.numero === "S/N") {
-                  handlerChange("numero", "");
-                }
-              }}
-              onBlur={() => {
-                if (!aluno.numero || !aluno.numero.trim()) {
-                  handlerChange("numero", "S/N");
-                }
-              }}
               onChange={(e) => handlerChange("numero", e.target.value)}
               placeholder="S/N"
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-white outline-none focus:border-yellow-400 transition"

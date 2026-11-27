@@ -6,7 +6,7 @@ import { logout } from "../redux/slices/authSlice";
 import { limparAlunos } from "../redux/slices/alunosSlice";
 
 const api = axios.create({
-    baseURL:'http://localhost:8080'
+    baseURL:'https://tigregym.onrender.com'
 });
 
 api.interceptors.request.use(

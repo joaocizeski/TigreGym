@@ -32,7 +32,7 @@ export default function SistemaLayout({children}: {children: React.ReactNode;}) 
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <Header />
 
-        <main className="flex-1 overflow-x-hidden">
+        <main className="flex-1 overflow-x-hidden bg-[#070707]">
           {children}
         </main>
 
